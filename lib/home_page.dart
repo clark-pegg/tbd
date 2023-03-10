@@ -14,26 +14,25 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black54,
         title: Row(
           children: [
             Expanded(
               flex: 3,
               child: FittedBox(
                 child: IconButton(
-                    icon: const Icon(Icons.menu, color: Colors.black),
+                    icon: const Icon(Icons.menu),
                     onPressed: () => Text("1")), // Should be menu screen
               ),
             ),
             const Expanded(
               flex: 14,
               child: TextField(
-                style: TextStyle(color: Colors.white70),
+                style: TextStyle(color: Colors.black),
                 decoration: InputDecoration(
-                  hintText: "SEARCH",
-                  hintStyle: TextStyle(color: Colors.white70),
+                  hintText: "Search",
+                  hintStyle: TextStyle(color: Colors.black),
                   filled: true,
-                  fillColor: Colors.black87,
+                  fillColor: Colors.white,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -42,7 +41,7 @@ class HomePage extends StatelessWidget {
               flex: 3,
               child: FittedBox(
                 child: IconButton(
-                  icon: Icon(Icons.settings, color: Colors.black),
+                  icon: Icon(Icons.settings),
                   onPressed: () => Text("1"), // Shoud be settings screen
                 ),
               ),
@@ -50,8 +49,26 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      body: GridView.count(
-          crossAxisCount: 3, children: getFilesFromNames(exampleFiles)),
+      body: Column(
+        children: [
+          const Expanded(
+            flex: 1,
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(top: 20, bottom: 20),
+              child: FittedBox(
+                child: Text("Class Notes"),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 9,
+            child: GridView.count(
+              crossAxisCount: 3,
+              children: getFilesFromNames(exampleFiles),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -74,7 +91,7 @@ class File extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MenuItemButton(
-      onPressed: () => Navigator.pushReplacement(
+      onPressed: () => Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => DocPage(),
