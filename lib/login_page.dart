@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 import './signup_page.dart';
+import './home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
@@ -124,7 +125,12 @@ class _LoginPageState extends State<LoginPage> {
                                   style: TextButton.styleFrom(
                                     textStyle: const TextStyle(fontSize: 20),
                                   ),
-                                  onPressed: () => {print("Log in")},
+                                  onPressed: () => Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => HomePage(),
+                                    ),
+                                  ),
                                   child: const Text(
                                     'Log In',
                                     style: TextStyle(color: Colors.white),
@@ -160,7 +166,12 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         SignInButton(
                           Buttons.Google,
-                          onPressed: () => {print("Google Sign In")},
+                          onPressed: () => Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                          ),
                         ),
                         const Spacer(),
                         const Divider(
@@ -172,11 +183,13 @@ class _LoginPageState extends State<LoginPage> {
                           height: textFieldHeight,
                           child: RichText(
                             textAlign: TextAlign.center,
-                            text: TextSpan(children: <TextSpan>[
-                              const TextSpan(
+                            text: TextSpan(
+                              children: <TextSpan>[
+                                const TextSpan(
                                   text: "Not a member? ",
-                                  style: TextStyle(color: Colors.black)),
-                              TextSpan(
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                TextSpan(
                                   text: 'Sign up',
                                   style: const TextStyle(
                                       color: Colors.blue,
@@ -185,11 +198,14 @@ class _LoginPageState extends State<LoginPage> {
                                     ..onTap = (() => Navigator.push(
                                           context,
                                           MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const SignupPage(
-                                                      title: "Sign Up Page")),
-                                        ))),
-                            ]),
+                                            builder: (context) =>
+                                                const SignupPage(
+                                                    title: "Sign Up Page"),
+                                          ),
+                                        )),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],

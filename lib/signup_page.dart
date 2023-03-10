@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:tbd/login_page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key, required this.title});
@@ -133,7 +134,7 @@ class _SignupPageState extends State<SignupPage> {
                                   style: TextButton.styleFrom(
                                     textStyle: const TextStyle(fontSize: 20),
                                   ),
-                                  onPressed: () => {print("Sign Up")},
+                                  onPressed: () => Navigator.pop(context),
                                   child: const Text(
                                     'Sign Up',
                                     style: TextStyle(color: Colors.white),
