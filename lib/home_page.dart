@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tbd/doc_page.dart';
 
 const exampleFiles = [
   "abc",
@@ -21,7 +22,7 @@ class HomePage extends StatelessWidget {
               child: FittedBox(
                 child: IconButton(
                     icon: const Icon(Icons.menu, color: Colors.black),
-                    onPressed: () => Text("1")),
+                    onPressed: () => Text("1")), // Should be menu screen
               ),
             ),
             const Expanded(
@@ -42,7 +43,7 @@ class HomePage extends StatelessWidget {
               child: FittedBox(
                 child: IconButton(
                   icon: Icon(Icons.settings, color: Colors.black),
-                  onPressed: () => Text("1"),
+                  onPressed: () => Text("1"), // Shoud be settings screen
                 ),
               ),
             ),
@@ -73,7 +74,12 @@ class File extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MenuItemButton(
-      onPressed: () => {},
+      onPressed: () => Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DocPage(),
+        ),
+      ),
       child: Column(
         children: [
           const Expanded(
