@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tbd/doc_page.dart';
+import 'package:tbd/settings_page.dart';
 
 const exampleFiles = [
   "abc",
@@ -42,7 +43,12 @@ class HomePage extends StatelessWidget {
               child: FittedBox(
                 child: IconButton(
                   icon: Icon(Icons.settings),
-                  onPressed: () => Text("1"), // Shoud be settings screen
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SettingsPage(),
+                    ),
+                  ),
                 ),
               ),
             ),
