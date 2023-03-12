@@ -11,6 +11,62 @@ const exampleFiles = [
 ];
 
 class HomePage extends StatelessWidget {
+  Widget _offsetPopup() => PopupMenuButton<int>(
+        itemBuilder: (context) => [
+          PopupMenuItem(
+            value: 1,
+            child: Text(
+              "Add Folder",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            ),
+          ),
+          PopupMenuItem(
+            value: 2,
+            child: Text(
+              "To-Do List",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            ),
+          ),
+          PopupMenuItem(
+            value: 3,
+            child: Text(
+              "New Project",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            ),
+          ),
+          PopupMenuItem(
+            value: 4,
+            child: Text(
+              "New Calendar",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            ),
+          ),
+          PopupMenuItem(
+            value: 5,
+            child: Text(
+              "New Note",
+              style:
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            ),
+          ),
+        ],
+        offset: Offset(-40.0, -250),
+        onSelected: (value) => _actionItemPopup(value),
+        icon: Container(
+          height: double.infinity,
+          width: double.infinity,
+          decoration: ShapeDecoration(
+              color: Colors.blue,
+              shape: StadiumBorder(
+                side: BorderSide(color: Colors.white, width: 2),
+              )),
+          child: Icon(Icons.add, color: Colors.white),
+        ),
+      );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,9 +129,26 @@ class HomePage extends StatelessWidget {
               children: getFilesFromNames(exampleFiles),
             ),
           ),
+          Container(
+              padding: EdgeInsets.only(right: 20.0, bottom: 20.0),
+              child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: Container(
+                      height: 80.0, width: 80.0, child: _offsetPopup()))),
         ],
       ),
     );
+  }
+
+  _actionItemPopup(value) {
+    Map<int, String> _routingTable = {
+      1: "New Folder",
+      2: "To-Do List",
+      3: "New Project",
+      4: "New Calendar",
+      5: "New Note"
+    };
+    print("Selected " + _routingTable[value]!);
   }
 }
 
