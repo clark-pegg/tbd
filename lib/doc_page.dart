@@ -13,7 +13,15 @@ class TabsConfig {
 }
 
 class DocPage extends StatefulWidget {
-  const DocPage({Key? key}) : super(key: key);
+  final String id;
+  final String filename;
+  final String content;
+  const DocPage(
+      {Key? key,
+      required this.id,
+      required this.content,
+      required this.filename})
+      : super(key: key);
   @override
   _DocPageState createState() => _DocPageState();
 }
@@ -166,9 +174,10 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
               ),
             ),
           ),
-          title: Text('Example Name'),
+          title: Text(widget.filename),
         ),
         body: TextField(
+          controller: TextEditingController(text: widget.content),
           keyboardType: TextInputType.multiline,
           maxLines: 36,
           decoration: InputDecoration(
