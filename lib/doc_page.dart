@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tbd/home_page.dart';
 
 import '../models/widget.dart';
 import '../models/widget_list_jsonstr.dart';
@@ -24,7 +25,6 @@ class DocPage extends StatefulWidget {
 class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
   late TabController controller;
   var myController = TextEditingController();
-  bool _isNew = false;
   StreamController<String> streamController = StreamController();
   String prev = "";
 
@@ -43,9 +43,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
   }
 
   _changeListener() {
-    if (prev != myController.text) {
-      _isNew = true;
-    }
+    if (prev != myController.text) {}
   }
 
   @override
@@ -156,6 +154,46 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
     });
   }
 
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Delete note'),
+            content: Text("Are you sure to delete this note ?"),
+            actions: <Widget>[
+              MaterialButton(
+                color: Colors.white,
+                textColor: Colors.black,
+                child: const Text('CANCEL'),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+              MaterialButton(
+                color: Colors.red,
+                textColor: Colors.white,
+                child: const Text('DELETE'),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                  FirebaseFirestore.instance
+                      .collection("notes")
+                      .doc(widget.id)
+                      .delete()
+                      .then((value) {});
+                  setState(() {});
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     //int numWidgets = 1;
@@ -192,24 +230,27 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
               appBar: AppBar(
                 actions: [
                   IconButton(
-                    icon:
-                        _isNew ? Icon(Icons.save_as_rounded) : Icon(Icons.done),
+                    icon: Icon(Icons.save_as_rounded),
                     tooltip: 'Save changes',
-                    onPressed: _isNew
-                        ? () {
-                            final snackBarSaving = SnackBar(
-                              content: Text('Saving...'),
-                            );
-                            final snackBarSaved = SnackBar(
-                              content: Text('Note saved with success'),
-                            );
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBarSaving);
-                            _saveChanges(widget.id);
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBarSaved);
-                          }
-                        : null,
+                    onPressed: () {
+                      final snackBarSaving = SnackBar(
+                        content: Text('Saving...'),
+                      );
+                      final snackBarSaved = SnackBar(
+                        content: Text('Note saved with success'),
+                      );
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(snackBarSaving);
+                      _saveChanges(widget.id);
+                      ScaffoldMessenger.of(context).showSnackBar(snackBarSaved);
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    tooltip: 'Delete note',
+                    onPressed: () {
+                      _displayTextInputDialog(context);
+                    },
                   ),
                 ],
                 bottom: TabBar(
@@ -263,7 +304,6 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
         .collection('notes')
         .doc(id)
         .update({'content': myController.text});
-    _isNew = false;
     print("Saved !");
   }
 }
