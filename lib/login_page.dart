@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import './signup_page.dart';
 import './home_page.dart';
@@ -25,7 +26,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool passwordVisible = false;
-
+  final emailC = TextEditingController();
+  final passwordC = TextEditingController();
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -61,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                       children: <Widget>[
                         const Spacer(),
                         const Text(
-                          'Organization App',
+                          'Login',
                           style: TextStyle(fontFamily: 'RobotoMono'),
                           textScaleFactor: 2,
                         ),
@@ -69,10 +71,11 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(
                             width: textFieldWidth,
                             height: textFieldHeight,
-                            child: const TextField(
+                            child: TextField(
+                              controller: emailC,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'Username',
+                                labelText: 'Email',
                               ),
                             )),
                         const SizedBox(height: 30),
@@ -81,6 +84,7 @@ class _LoginPageState extends State<LoginPage> {
                             height: textFieldHeight,
                             child: TextField(
                               obscureText: !passwordVisible,
+                              controller: passwordC,
                               decoration: InputDecoration(
                                 border: const OutlineInputBorder(),
                                 labelText: 'Password',
@@ -125,12 +129,9 @@ class _LoginPageState extends State<LoginPage> {
                                   style: TextButton.styleFrom(
                                     textStyle: const TextStyle(fontSize: 20),
                                   ),
-                                  onPressed: () => Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => HomePage(),
-                                    ),
-                                  ),
+                                  onPressed: () {
+                                    _loginUser();
+                                  },
                                   child: const Text(
                                     'Log In',
                                     style: TextStyle(color: Colors.white),
@@ -216,5 +217,25 @@ class _LoginPageState extends State<LoginPage> {
             );
           },
         ));
+  }
+
+  void _loginUser() async {
+    try {
+      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: emailC.text, password: passwordC.text);
+      print(FirebaseAuth.instance.currentUser!.uid);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided for that user.');
+      }
+    }
   }
 }

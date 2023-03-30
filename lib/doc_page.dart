@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:developer';
 import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tbd/home_page.dart';
 
@@ -182,6 +183,8 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                     MaterialPageRoute(builder: (context) => HomePage()),
                   );
                   FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
                       .collection("notes")
                       .doc(widget.id)
                       .delete()
@@ -201,6 +204,8 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
     return StreamBuilder<DocumentSnapshot>(
       // Initialize FlutterFire:
       stream: FirebaseFirestore.instance
+          .collection("users")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection("notes")
           .doc(widget.id)
           .snapshots(),
@@ -301,7 +306,9 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
   void _saveChanges(id) {
     print("Saving...");
     FirebaseFirestore.instance
-        .collection('notes')
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("notes")
         .doc(id)
         .update({'content': myController.text});
     print("Saved !");

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tbd/doc_page.dart';
 import 'package:tbd/settings_page.dart';
@@ -12,8 +13,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<List<File>> getNotes() async {
-    CollectionReference _collectionRef =
-        FirebaseFirestore.instance.collection('notes');
+    CollectionReference _collectionRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection("notes");
     // Get docs from collection reference
     QuerySnapshot querySnapshot = await _collectionRef.get();
     List<File> notes = [];
@@ -94,6 +97,8 @@ class _HomePageState extends State<HomePage> {
                   setState(() {
                     codeDialog = valueText;
                     FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
                         .collection("notes")
                         .add({"name": codeDialog, "content": ""}).then((value) {
                       Navigator.push(

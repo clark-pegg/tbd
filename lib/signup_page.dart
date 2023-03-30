@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:tbd/login_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import './home_page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key, required this.title});
@@ -24,12 +27,15 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   bool passwordVisible1 = false;
   bool passwordVisible2 = false;
-
+  final emailC = TextEditingController();
+  final password1C = TextEditingController();
+  final password2C = TextEditingController();
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double textFieldWidth = width * 0.8;
     double textFieldHeight = 50;
+
     // This method is rerun every time setState is called, for instance as done
     // by the _incrementCounter method above.
     //
@@ -59,7 +65,7 @@ class _SignupPageState extends State<SignupPage> {
                       children: <Widget>[
                         const Spacer(),
                         const Text(
-                          'Organization App',
+                          'Create an account',
                           style: TextStyle(fontFamily: 'RobotoMono'),
                           textScaleFactor: 2,
                         ),
@@ -67,10 +73,11 @@ class _SignupPageState extends State<SignupPage> {
                         SizedBox(
                             width: textFieldWidth,
                             height: textFieldHeight,
-                            child: const TextField(
+                            child: TextField(
+                              controller: emailC,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'Username',
+                                labelText: 'Email',
                               ),
                             )),
                         const SizedBox(height: 30),
@@ -78,6 +85,7 @@ class _SignupPageState extends State<SignupPage> {
                             width: textFieldWidth,
                             height: textFieldHeight,
                             child: TextField(
+                              controller: password1C,
                               obscureText: !passwordVisible1,
                               decoration: InputDecoration(
                                 border: const OutlineInputBorder(),
@@ -102,6 +110,7 @@ class _SignupPageState extends State<SignupPage> {
                             width: textFieldWidth,
                             height: textFieldHeight,
                             child: TextField(
+                              controller: password2C,
                               obscureText: !passwordVisible2,
                               decoration: InputDecoration(
                                 border: const OutlineInputBorder(),
@@ -134,7 +143,9 @@ class _SignupPageState extends State<SignupPage> {
                                   style: TextButton.styleFrom(
                                     textStyle: const TextStyle(fontSize: 20),
                                   ),
-                                  onPressed: () => Navigator.pop(context),
+                                  onPressed: () {
+                                    _createAccount();
+                                  },
                                   child: const Text(
                                     'Sign Up',
                                     style: TextStyle(color: Colors.white),
@@ -153,5 +164,39 @@ class _SignupPageState extends State<SignupPage> {
             );
           },
         ));
+  }
+
+  void _createAccount() async {
+    if (password1C.text == password2C.text) {
+      try {
+        final credential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailC.text,
+          password: password1C.text,
+        );
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection("notes")
+            .add({
+          "name": "My first note",
+          "content": "Welcome to StudentNote :)"
+        }).then((value) {});
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ),
+        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'weak-password') {
+          print('The password provided is too weak.');
+        } else if (e.code == 'email-already-in-use') {
+          print('The account already exists for that email.');
+        }
+      } catch (e) {
+        print(e);
+      }
+    }
   }
 }
