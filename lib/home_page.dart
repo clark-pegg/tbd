@@ -202,9 +202,7 @@ class File extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) => DocPage(
-            filename: this.filename,
             id: this.id,
-            content: this.content,
           ),
         ),
       ),

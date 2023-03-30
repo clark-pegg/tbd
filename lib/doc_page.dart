@@ -1,11 +1,13 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:developer';
 import 'dart:convert';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../models/widget.dart';
 import '../models/widget_list_jsonstr.dart';
+import 'package:stream_transform/stream_transform.dart';
 
 class TabsConfig {
   static List<String> tabs = [];
@@ -14,20 +16,18 @@ class TabsConfig {
 
 class DocPage extends StatefulWidget {
   final String id;
-  final String filename;
-  final String content;
-  const DocPage(
-      {Key? key,
-      required this.id,
-      required this.content,
-      required this.filename})
-      : super(key: key);
+  const DocPage({Key? key, required this.id}) : super(key: key);
   @override
   _DocPageState createState() => _DocPageState();
 }
 
 class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
   late TabController controller;
+  var myController = TextEditingController();
+  bool _isNew = false;
+  StreamController<String> streamController = StreamController();
+  String prev = "";
+
   @override
   void initState() {
     // TODO: implement initState
@@ -37,7 +37,23 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
       vsync: this,
       initialIndex: TabsConfig.selectedTabIndex,
     );
+    myController = TextEditingController();
+    myController.addListener(_changeListener);
     super.initState();
+  }
+
+  _changeListener() {
+    if (prev != myController.text) {
+      _isNew = true;
+    }
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is removed from the
+    // widget tree.
+    myController.dispose();
+    super.dispose();
   }
 
   void updateTabs() {
@@ -144,47 +160,110 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     //int numWidgets = 1;
     //length: numWidgets,
-
-    return Scaffold(
-        appBar: AppBar(
-          bottom: TabBar(
-            onTap: (index) {
-              print(TabsConfig.tabs[index]);
-              if (TabsConfig.tabs[index] == 'plus.png') {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) => _buildPopupDialog(context),
-                );
-              }
-              if (TabsConfig.tabs[index] == 'text.png') {
-                // showDialog(
-                //   context: context,
-                //   builder: (BuildContext context) => textBox(context),
-                // );
-              }
-            },
-            controller: controller,
-            isScrollable: true,
-            tabs: List.generate(
-              TabsConfig.tabs.length,
-              (index) => Image.asset(
-                'images/${TabsConfig.tabs[index]}',
-                width: 40,
-                height: 40,
+    return StreamBuilder<DocumentSnapshot>(
+      // Initialize FlutterFire:
+      stream: FirebaseFirestore.instance
+          .collection("notes")
+          .doc(widget.id)
+          .snapshots(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        // Check for errors
+        if (snapshot.hasError || !snapshot.hasData) {
+          return Text("Something went wrong");
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Otherwise, show something whilst waiting for initialization to complete
+          return Center(
+            child: Text(
+              "Loading...",
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
               ),
             ),
-          ),
-          title: Text(widget.filename),
-        ),
-        body: TextField(
-          controller: TextEditingController(text: widget.content),
-          keyboardType: TextInputType.multiline,
-          maxLines: 36,
-          decoration: InputDecoration(
-              hintText: "Insert your text",
-              enabledBorder: OutlineInputBorder()),
-          scrollPadding: EdgeInsets.all(20.0),
-          autofocus: true,
-        ));
+          );
+        } else {
+          String filename = snapshot.data!["name"];
+          String content = snapshot.data!["content"];
+          myController.text = content;
+          prev = content;
+          return Scaffold(
+              appBar: AppBar(
+                actions: [
+                  IconButton(
+                    icon:
+                        _isNew ? Icon(Icons.save_as_rounded) : Icon(Icons.done),
+                    tooltip: 'Save changes',
+                    onPressed: _isNew
+                        ? () {
+                            final snackBarSaving = SnackBar(
+                              content: Text('Saving...'),
+                            );
+                            final snackBarSaved = SnackBar(
+                              content: Text('Note saved with success'),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBarSaving);
+                            _saveChanges(widget.id);
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBarSaved);
+                          }
+                        : null,
+                  ),
+                ],
+                bottom: TabBar(
+                  onTap: (index) {
+                    print(TabsConfig.tabs[index]);
+                    if (TabsConfig.tabs[index] == 'plus.png') {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) =>
+                            _buildPopupDialog(context),
+                      );
+                    }
+                    if (TabsConfig.tabs[index] == 'text.png') {
+                      // showDialog(
+                      //   context: context,
+                      //   builder: (BuildContext context) => textBox(context),
+                      // );
+                    }
+                  },
+                  controller: controller,
+                  isScrollable: true,
+                  tabs: List.generate(
+                    TabsConfig.tabs.length,
+                    (index) => Image.asset(
+                      'images/${TabsConfig.tabs[index]}',
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                ),
+                title: Text(filename),
+              ),
+              body: TextField(
+                controller: myController,
+                keyboardType: TextInputType.multiline,
+                maxLines: 36,
+                decoration: InputDecoration(
+                    hintText: "Insert your text",
+                    enabledBorder: OutlineInputBorder()),
+                scrollPadding: EdgeInsets.all(20.0),
+                autofocus: true,
+              ));
+        }
+      },
+    );
+  }
+
+  void _saveChanges(id) {
+    print("Saving...");
+    FirebaseFirestore.instance
+        .collection('notes')
+        .doc(id)
+        .update({'content': myController.text});
+    _isNew = false;
+    print("Saved !");
   }
 }
