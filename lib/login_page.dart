@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
 import './signup_page.dart';
 import './home_page.dart';
 
@@ -167,12 +167,9 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         SignInButton(
                           Buttons.Google,
-                          onPressed: () => Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(),
-                            ),
-                          ),
+                          onPressed: () {
+                            _handleSignIn();
+                          },
                         ),
                         const Spacer(),
                         const Divider(
@@ -217,6 +214,26 @@ class _LoginPageState extends State<LoginPage> {
             );
           },
         ));
+  }
+
+  Future<void> _handleSignIn() async {
+    GoogleSignIn _googleSignIn = GoogleSignIn(
+      scopes: [
+        'email',
+        'https://www.googleapis.com/auth/contacts.readonly',
+      ],
+    );
+    try {
+      await _googleSignIn.signIn();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    } catch (error) {
+      print(error);
+    }
   }
 
   void _loginUser() async {
