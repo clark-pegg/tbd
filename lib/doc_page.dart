@@ -1,33 +1,61 @@
-import 'dart:async';
+import 'dart:ffi';
+
+import 'package:flutter/material.dart';
 import 'dart:io';
 import 'dart:developer';
 import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:tbd/home_page.dart';
-
 import '../models/widget.dart';
 import '../models/widget_list_jsonstr.dart';
-import 'package:stream_transform/stream_transform.dart';
 
 class TabsConfig {
   static List<String> tabs = [];
   static int selectedTabIndex = 0;
 }
 
-class DocPage extends StatefulWidget {
-  final String id;
-  const DocPage({Key? key, required this.id}) : super(key: key);
+class Notifier extends ChangeNotifier {
+
+  int id = 0;
+
+  void setId(int id) {
+    this.id = id;
+    notifyListeners(); // Here the magic happens
+  }
+}
+
+class DisplayedWidgets {
+  static List<String> displayed = [];
+  static List<String> names = [];
+  static List<double> dx = [];
+  static List<double> dy = [];
+  static List<double> dx_settings = [];
+  static List<double> dy_settings = [];
+  static List<String> text = [];
+  static List<TextEditingController> textControllers = [];
+  static List<bool> visibilityValuesSettings = [];
+  static List<bool> visibilityValues = [];
+  static int selectedDispIndex = 0;
+  static List<double> width = [];
+  static List<double> height = [];
+  static List<DragUpdateDetails> details = [];
+  static List<DragUpdateDetails> details_settings = [];
+  static bool editing = false;
+
+}
+
+class DocPage extends StatefulWidget{
+  const DocPage({Key? key}) : super(key : key);
   @override
   _DocPageState createState() => _DocPageState();
 }
 
+
+
+
 class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
   late TabController controller;
-  var myController = TextEditingController();
-  StreamController<String> streamController = StreamController();
-  String prev = "";
+  late TabController controller1;
+  List<bool> int2bool = [false, true];
+
 
   @override
   void initState() {
@@ -38,21 +66,12 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
       vsync: this,
       initialIndex: TabsConfig.selectedTabIndex,
     );
-    myController = TextEditingController();
-    myController.addListener(_changeListener);
+    controller1 = TabController(
+      length: DisplayedWidgets.displayed.length,
+      vsync: this,
+      initialIndex: DisplayedWidgets.selectedDispIndex,
+    );
     super.initState();
-  }
-
-  _changeListener() {
-    if (prev != myController.text) {}
-  }
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is removed from the
-    // widget tree.
-    myController.dispose();
-    super.dispose();
   }
 
   void updateTabs() {
@@ -62,134 +81,306 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
         vsync: this,
         initialIndex: TabsConfig.selectedTabIndex,
       );
+    setState(() {});
+    } catch (on) {
+      print(on); // TODO: rem
+    }
+  }
+
+  void updateDisplayed() {
+    try {
+      controller1 = TabController(
+        length: DisplayedWidgets.displayed.length,
+        vsync: this,
+        initialIndex: 0,
+      );
       setState(() {});
     } catch (on) {
       print(on); // TODO: rem
     }
   }
 
-  void toggleTab() {
+  void toggleTab(){
     int index = TabsConfig.selectedTabIndex;
   }
 
-  Offset offset = Offset.zero;
-  Widget textBox(BuildContext context) {
-    return Scaffold(
-      body: TextFormField(
-        decoration: const InputDecoration(
-          border: UnderlineInputBorder(),
-          labelText: 'Enter your username',
-        ),
-      ),
-    );
+  void toggleDisp(){
+    int index = DisplayedWidgets.selectedDispIndex;
   }
 
-  final List<bool> _selected =
-      List.generate(20, (i) => false); // Fill it with false initially
+  bool _enabled = true;
 
+  void _onTap () {
+    // Disable GestureDetector's 'onTap' property.
+    setState(() => _enabled = ! _enabled);
+
+    // Enable it after 1s.
+
+
+    // Rest of your code...
+  }
+
+  final Notifier notifier = Notifier();
+  Offset offset = Offset.zero;
+  static double temp_dx = 0.0;
+  static double temp_dy = 0.0;
+  final List<String> textSettings = ["Close Menu", "Delete Widget", "Change Name","Height", "Width"];
+
+  Widget _buildTextBoxSettings(BuildContext context, int id) {
+  return StatefulBuilder(
+      builder: (context, setState) {
+        //if(DisplayedWidgets.dx[id])
+        return Positioned(
+            left: DisplayedWidgets.dx[id] - 95,
+            top: DisplayedWidgets.dy[id] + 5,
+            child: Visibility(
+              visible: DisplayedWidgets.visibilityValuesSettings[id],
+                child: SizedBox(
+                  width: 100,
+                  height: 1000,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: 5,
+                    itemBuilder: ((context, index) {
+
+                      return ListTile(
+                          shape: const ContinuousRectangleBorder(
+                            side:  BorderSide(color: Colors.black, width: 2),
+                          ),
+                        title: Text('${textSettings[index]}'),
+                        onTap: () => {
+                            if(textSettings[index] == "Delete Widget"){
+                                if(DisplayedWidgets.editing == true){
+                                  for(var i = 0; i <
+                                      DisplayedWidgets.displayed.length;
+                                  i += 1) ... [
+                                    if(i != id) ... [
+                                      DisplayedWidgets.visibilityValues[i] =
+                                      !DisplayedWidgets.visibilityValues[i]
+                                    ],
+                                  ],
+                                },
+                                DisplayedWidgets.displayed.removeAt(id),
+                                DisplayedWidgets.names.removeAt(id),
+                                DisplayedWidgets.editing = false,
+                                DisplayedWidgets.height.removeAt(id),
+                                DisplayedWidgets.width.removeAt(id),
+                                DisplayedWidgets.dx.removeAt(id),
+                                DisplayedWidgets.dy.removeAt(id),
+                                DisplayedWidgets.dx_settings.removeAt(id),
+                                DisplayedWidgets.dy_settings.removeAt(id),
+                                DisplayedWidgets.visibilityValuesSettings[id] =
+                                false,
+                                DisplayedWidgets.visibilityValuesSettings
+                                    .removeAt(id),
+                                DisplayedWidgets.visibilityValues[id] = true,
+                                DisplayedWidgets.visibilityValues.removeAt(id),
+                                DisplayedWidgets.text.removeAt(id),
+                                DisplayedWidgets.textControllers.removeAt(id),
+                                DisplayedWidgets.details.removeAt(id),
+                                DisplayedWidgets.details_settings.removeAt(id),
+                                updateDisplayed(),
+                            },
+                          if(textSettings[index] == "Close Menu"){
+                              DisplayedWidgets.editing = false,
+                              DisplayedWidgets.dx[id] = temp_dx,
+                              DisplayedWidgets.dy[id] = temp_dy,
+                              DragUpdateDetails(globalPosition: Offset(DisplayedWidgets.dx[id],DisplayedWidgets.dy[id])),
+
+                              DisplayedWidgets.visibilityValuesSettings[id] = !DisplayedWidgets.visibilityValuesSettings[id],
+                              for(var i=0; i<DisplayedWidgets.displayed.length; i+=1){
+                                if(i != id) {
+                                  DisplayedWidgets.visibilityValues[i] =
+                                  !DisplayedWidgets.visibilityValues[i]
+                                },
+                              },
+                              updateDisplayed(),
+                          },
+                      },
+
+                    );
+                  }),
+                ),
+              ),
+              // actions: <Widget>[
+              //   IconButton(
+              //     icon: const Icon(Icons.close),
+              //     onPressed: () {
+              //       setState(() {DisplayedWidgets.visibilityValuesSettings[id] = false;});
+              //     },
+              //   ),
+              // ],
+
+
+          )
+        );
+
+
+
+      });
+  }
+
+
+  Widget _buildTextBox(BuildContext context, int id) {
+    return StatefulBuilder(
+        builder: (context, setState)
+    {
+      late FocusNode myFocusNode;
+
+      myFocusNode = FocusNode();
+      DragUpdateDetails e = DisplayedWidgets.details[id];
+      print(id);
+            notifier.setId(id);
+                return Positioned(
+                  left: DisplayedWidgets.dx[id],
+                  top: DisplayedWidgets.dy[id],
+                  child: Visibility(
+                    visible: DisplayedWidgets.visibilityValues[id],
+                    child: GestureDetector(
+                      onTap: _enabled ? _onTap: null,
+                      onPanUpdate: (DragUpdateDetails e) {
+                        setState(() {
+                          offset = Offset(
+                              DisplayedWidgets.details[id].delta.dx + DisplayedWidgets.dx[id],
+                              DisplayedWidgets.details[id].delta.dy + DisplayedWidgets.dy[id]);
+                          DisplayedWidgets.dx[id] += e.delta.dx;
+                          DisplayedWidgets.dy[id] += e.delta.dy;
+                          DisplayedWidgets.details[id] = DragUpdateDetails(globalPosition: Offset(DisplayedWidgets.dx[id],DisplayedWidgets.dy[id]));
+                          updateDisplayed();
+                        });
+                      },
+                      child: SizedBox(
+                          width: DisplayedWidgets.width[id],
+                          height: DisplayedWidgets.height[id],
+                            child: Stack(children: <Widget> [
+                                InkWell(
+                                  onTap: () => myFocusNode.requestFocus(),
+                                  onDoubleTap: () => {myFocusNode.unfocus(), DisplayedWidgets.text[id] = DisplayedWidgets.textControllers[id].text},
+                                  onLongPress: () => {
+                                    // open menu
+                                    if(DisplayedWidgets.visibilityValuesSettings[id] == false) ... [
+                                      DisplayedWidgets.editing = true,
+                                      temp_dx = DisplayedWidgets.dx[id],
+                                      temp_dy = DisplayedWidgets.dy[id],
+                                      DisplayedWidgets.dx[id] = 100,
+                                      DisplayedWidgets.dy[id] = 0,
+                                      DragUpdateDetails(globalPosition: Offset(DisplayedWidgets.dx[id],DisplayedWidgets.dy[id])),
+                                    ],
+                                    // close menu
+                                    if(DisplayedWidgets.visibilityValuesSettings[id] == true) ... [
+                                      DisplayedWidgets.editing = false,
+                                      DisplayedWidgets.dx[id] = temp_dx,
+                                      DisplayedWidgets.dy[id] = temp_dy,
+                                      DragUpdateDetails(globalPosition: Offset(DisplayedWidgets.dx[id],DisplayedWidgets.dy[id])),
+                                    ],
+
+                                    DisplayedWidgets.visibilityValuesSettings[id] = !DisplayedWidgets.visibilityValuesSettings[id],
+                                    for(var i=0; i<DisplayedWidgets.displayed.length; i+=1) ... [
+                                      if(i != id) ... [
+                                        DisplayedWidgets.visibilityValues[i] = !DisplayedWidgets.visibilityValues[i]
+                                      ],
+                                    ],
+                                    updateDisplayed(),
+                                     },
+                                  child: AbsorbPointer(
+                                      child: ListTile(
+                                        title: TextField(
+                                          controller: DisplayedWidgets.textControllers[id],
+                                          focusNode: myFocusNode,
+                                          keyboardType: TextInputType.multiline,
+                                          maxLines: 36,
+                                          decoration: InputDecoration(
+                                              labelText: DisplayedWidgets.names[id],
+                                              // Set border for enabled state (default)
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    width: 3, color: Colors.blue),
+                                              ),
+                                              // Set border for focused state
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                    width: 3, color: Colors.red),
+                                              )),
+                                        ),))
+                              ),
+                            ],
+                            ),
+                      ),
+
+                    ),
+                ),
+                );
+          });
+}
+  final List<bool> _selected = List.generate(20, (i) => false); // Fill it with false initially
   Widget _buildPopupDialog(BuildContext context) {
     List<Widgets> _widgets = [];
     List<dynamic> jsonList = jsonDecode(jsonString);
     _widgets = jsonList.map((json) => Widgets.fromJson(json)).toList();
-    return StatefulBuilder(builder: (context, setState) {
-      return AlertDialog(
-        title: Text("Widgets"),
-        content: SizedBox(
-          width: 450,
-          height: 500,
-          child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: 3,
-            itemBuilder: ((context, index) {
-              Widgets widget = _widgets[index];
-              return ListTile(
-                tileColor: _selected[index] ? Colors.blue : Colors.white,
-                //textColor: Colors.white,
-                onTap: () {
-                  if (TabsConfig.tabs.contains('${widget.imageName}')) {
-                    setState(() {
-                      _selected[index] = !_selected[index];
-                    });
-                    TabsConfig.tabs.remove('${widget.imageName}');
-                    updateTabs();
-                  } else {
-                    setState(() {
-                      _selected[index] = !_selected[index];
-                    });
-                    TabsConfig.tabs.add('${widget.imageName}');
-                    setState(() {});
-                    updateTabs();
-                  }
-                },
-
-                shape: ContinuousRectangleBorder(
-                  side: BorderSide(color: Colors.black, width: 1),
-                ),
-                dense: true,
-                visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                leading: Image.asset(
-                  'images/${widget.imageName}',
-                  width: 50,
-                  height: 50,
-                ),
-                title: Text(widget.widgetName, style: TextStyle(fontSize: 30)),
-                subtitle:
-                    Text(widget.description, style: TextStyle(fontSize: 20)),
-                trailing: widget.isFavourite
-                    ? Icon(Icons.favorite, color: Colors.red)
-                    : Icon(Icons.favorite_border, color: Colors.black),
-              );
-            }),
-          ),
-        ),
-        actions: <Widget>[
-          new IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    });
-  }
-
-  Future<void> _displayTextInputDialog(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
+    return StatefulBuilder(
+        builder: (context, setState) {
           return AlertDialog(
-            title: const Text('Delete note'),
-            content: Text("Are you sure to delete this note ?"),
-            actions: <Widget>[
-              MaterialButton(
-                color: Colors.white,
-                textColor: Colors.black,
-                child: const Text('CANCEL'),
-                onPressed: () {
-                  setState(() {
-                    Navigator.pop(context);
-                  });
-                },
-              ),
-              MaterialButton(
-                color: Colors.red,
-                textColor: Colors.white,
-                child: const Text('DELETE'),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
+            title: Text("Widgets"),
+            content: SizedBox(
+              width: 450,
+              height: 500,
+              child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: 3,
+                itemBuilder: ((context, index) {
+                  Widgets widget = _widgets[index];
+                  return ListTile(
+                    tileColor: _selected[index] ? Colors.blue : Colors.white,
+                    //textColor: Colors.white,
+                    onTap: () {
+                      if (TabsConfig.tabs.contains('${widget.imageName}')) {
+                        setState(() {
+                          _selected[index] = !_selected[index];
+                        });
+                        TabsConfig.tabs.remove('${widget.imageName}');
+                        updateTabs();
+                      }
+                      else {
+                        setState(() {
+                          _selected[index] = !_selected[index];
+                        });
+                        TabsConfig.tabs.add('${widget.imageName}');
+                        setState(() {});
+                        updateTabs();
+                      }
+                    },
+
+                    shape: const ContinuousRectangleBorder(
+                      side:  BorderSide(color: Colors.black, width: 1),
+                    ),
+                    dense: true,
+                    visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                    leading: Image.asset(
+                      'images/${widget.imageName}',
+                      width: 50,
+                      height: 50,
+                    ),
+                    title: Text(widget.widgetName,
+                        style: const TextStyle(
+                            fontSize: 30
+                        )),
+                    subtitle: Text(widget.description,
+                        style: const TextStyle(
+                            fontSize: 20
+                        )),
+                    trailing: widget.isFavourite
+                        ? Icon(Icons.favorite, color: Colors.red)
+                        : Icon(Icons.favorite_border, color: Colors.black),
                   );
-                  FirebaseFirestore.instance
-                      .collection("users")
-                      .doc(FirebaseAuth.instance.currentUser!.uid)
-                      .collection("notes")
-                      .doc(widget.id)
-                      .delete()
-                      .then((value) {});
-                  setState(() {});
+                }),
+              ),
+            ),
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () {
+                  Navigator.of(context).pop();
                 },
               ),
             ],
@@ -197,120 +388,95 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
         });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     //int numWidgets = 1;
+    int id = 0;
+
     //length: numWidgets,
-    return StreamBuilder<DocumentSnapshot>(
-      // Initialize FlutterFire:
-      stream: FirebaseFirestore.instance
-          .collection("users")
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection("notes")
-          .doc(widget.id)
-          .snapshots(),
-      builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        // Check for errors
-        if (snapshot.hasError || !snapshot.hasData) {
-          return Text("Something went wrong");
-        }
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          // Otherwise, show something whilst waiting for initialization to complete
-          return Center(
-            child: Text(
-              "Loading...",
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          );
-        } else {
-          String filename = snapshot.data!["name"];
-          String content = snapshot.data!["content"];
-          myController.text = content;
-          prev = content;
-          return Scaffold(
-              appBar: AppBar(
-                actions: [
-                  IconButton(
-                    icon: Icon(Icons.save_as_rounded),
-                    tooltip: 'Save changes',
-                    onPressed: () {
-                      final snackBarSaving = SnackBar(
-                        content: Text('Saving...'),
-                      );
-                      final snackBarSaved = SnackBar(
-                        content: Text('Note saved with success'),
-                      );
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(snackBarSaving);
-                      _saveChanges(widget.id);
-                      ScaffoldMessenger.of(context).showSnackBar(snackBarSaved);
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.delete),
-                    tooltip: 'Delete note',
-                    onPressed: () {
-                      _displayTextInputDialog(context);
-                    },
-                  ),
-                ],
-                bottom: TabBar(
-                  onTap: (index) {
-                    print(TabsConfig.tabs[index]);
-                    if (TabsConfig.tabs[index] == 'plus.png') {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) =>
-                            _buildPopupDialog(context),
-                      );
-                    }
-                    if (TabsConfig.tabs[index] == 'text.png') {
-                      // showDialog(
-                      //   context: context,
-                      //   builder: (BuildContext context) => textBox(context),
-                      // );
-                    }
-                  },
-                  controller: controller,
-                  isScrollable: true,
-                  tabs: List.generate(
-                    TabsConfig.tabs.length,
-                    (index) => Image.asset(
-                      'images/${TabsConfig.tabs[index]}',
+    return StatefulBuilder(
+        builder: (context, setState)
+    {
+      return Scaffold(
+          appBar: AppBar(
+            bottom: TabBar(
+              onTap: (index) {
+                //print(TabsConfig.tabs[index]);
+                if (TabsConfig.tabs[index] == 'plus.png') {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) =>
+                        _buildPopupDialog(context),
+                  );
+                }
+                if (TabsConfig.tabs[index] == 'text.png' && DisplayedWidgets.editing == false) {
+                  DisplayedWidgets.displayed.add('text');
+                  DisplayedWidgets.names.add('Text box ${DisplayedWidgets.displayed.length}');
+                  DisplayedWidgets.width.add(150);
+                  DisplayedWidgets.height.add(100);
+                  DisplayedWidgets.dx.add(50.0);
+                  DisplayedWidgets.dy.add(100.0);
+                  DisplayedWidgets.dx_settings.add(50.0);
+                  DisplayedWidgets.dy_settings.add(100.0);
+                  DisplayedWidgets.visibilityValuesSettings.add(false);
+                  DisplayedWidgets.visibilityValues.add(true);
+                  DisplayedWidgets.text.add("");
+                  DisplayedWidgets.textControllers.add(TextEditingController());
+                  DisplayedWidgets.details.add(DragUpdateDetails(globalPosition:Offset(0.0,0.0)));
+                  DisplayedWidgets.details_settings.add(DragUpdateDetails(globalPosition:Offset(0.0,0.0)));
+                  updateDisplayed();
+                }else if (TabsConfig.tabs[index] == 'code.png') {
+                  DisplayedWidgets.displayed.add('code');
+                  DisplayedWidgets.dx.add(0.0);
+                  DisplayedWidgets.dy.add(0.0);
+                  DisplayedWidgets.visibilityValuesSettings.add(false);
+                  updateDisplayed();
+                }else if (TabsConfig.tabs[index] == 'math.png') {
+                  DisplayedWidgets.displayed.add('math');
+                  DisplayedWidgets.dx.add(0.0);
+                  DisplayedWidgets.dy.add(0.0);
+                  DisplayedWidgets.visibilityValuesSettings.add(false);
+                  updateDisplayed();
+                }
+              },
+              controller: controller,
+              isScrollable: true,
+              tabs: List.generate(
+                TabsConfig.tabs.length,
+                    (index) =>
+                    Image.asset('images/${TabsConfig.tabs[index]}',
                       width: 40,
                       height: 40,
                     ),
-                  ),
-                ),
-                title: Text(filename),
               ),
-              body: TextField(
-                controller: myController,
-                keyboardType: TextInputType.multiline,
-                maxLines: 36,
-                decoration: InputDecoration(
-                    hintText: "Insert your text",
-                    enabledBorder: OutlineInputBorder()),
-                scrollPadding: EdgeInsets.all(20.0),
-                autofocus: true,
-              ));
-        }
-      },
-    );
-  }
+            ),
 
-  void _saveChanges(id) {
-    print("Saving...");
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection("notes")
-        .doc(id)
-        .update({'content': myController.text});
-    print("Saved !");
+            title: Text('Example Name'),
+          ),
+          body: SizedBox.expand(
+            //need to add firebase integration here to see if widget data already exists
+          child: Center(
+              child: Stack(children: <Widget>[
+                for(var i=0; i<DisplayedWidgets.displayed.length; i+=1) ... [
+                    if(DisplayedWidgets.displayed[i] == 'text') ... [
+                      _buildTextBox(context, i)
+                    ],
+                    Center(
+                      child: Stack(children: <Widget>[
+                        for(var i=0; i<DisplayedWidgets.displayed.length; i+=1) ... [
+                          _buildTextBoxSettings(context, i),
+                        ]
+                      ],),
+                    )
+
+                ],
+
+                ],),
+          )
+          ),
+      );
+    });
   }
 }
