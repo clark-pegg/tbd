@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -5,6 +6,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import './signup_page.dart';
 import './home_page.dart';
+
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: [
+    'email',
+  ],
+);
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
@@ -217,20 +224,37 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _handleSignIn() async {
-    GoogleSignIn _googleSignIn = GoogleSignIn(
-      scopes: [
-        'email',
-        'https://www.googleapis.com/auth/contacts.readonly',
-      ],
-    );
     try {
-      await _googleSignIn.signIn();
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(),
-        ),
-      );
+      FirebaseAuth auth = FirebaseAuth.instance;
+
+      var signIn = await _googleSignIn.signIn();
+      if (signIn != null) {
+        final GoogleSignInAuthentication signInAuth =
+            await signIn.authentication;
+
+        final AuthCredential cred = GoogleAuthProvider.credential(
+          accessToken: signInAuth.accessToken,
+          idToken: signInAuth.idToken,
+        );
+
+        try {
+          final UserCredential userCredential =
+              await auth.signInWithCredential(cred);
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'account-exists-with-different-credential') {
+            // handle the error here
+          } else if (e.code == 'invalid-credential') {
+            // handle the error here
+          }
+        } catch (e) {}
+      }
     } catch (error) {
       print(error);
     }
