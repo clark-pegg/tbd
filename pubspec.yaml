@@ -37,6 +37,8 @@ dependencies:
   cloud_firestore: ^4.4.5
   stream_transform: ^2.1.0
   firebase_auth: ^4.3.0
+  shared_preferences: ^2.1.0
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:
