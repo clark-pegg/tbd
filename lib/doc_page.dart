@@ -30,21 +30,29 @@ class DisplayedWidgets {
   static List<double> dx_settings = [];
   static List<double> dy_settings = [];
   static List<String> text = [];
+  static List<String> bgFill = [];
+  static List<String> textCol = [];
+  static List<double> fontSize = [];
   static List<TextEditingController> textControllers = [];
   static List<bool> visibilityValuesSettings = [];
   static List<bool> visibilityValues = [];
   static int selectedDispIndex = 0;
   static List<double> width = [];
   static List<double> height = [];
+  static List<double> border = [];
   static List<DragUpdateDetails> details = [];
   static List<DragUpdateDetails> details_settings = [];
+  static List<List<String>> curr_settings = [[]];
   static bool editing = false;
+  static bool input = false;
+  static String input_txt = "";
+  static String input_name = "";
+  static TextEditingController input_ctrl = TextEditingController();
 
 }
 
 class DocPage extends StatefulWidget{
-  final String id;
-  const DocPage({Key? key, required this.id}) : super(key: key);
+  const DocPage({Key? key}) : super(key : key);
   @override
   _DocPageState createState() => _DocPageState();
 }
@@ -120,12 +128,113 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
 
     // Rest of your code...
   }
+  Widget _buildInputBox(BuildContext context, int id) {
+    return StatefulBuilder(
+        builder: (context, setState) {
+          late FocusNode inputFocus;
+          inputFocus = FocusNode();
+          return Positioned(
+            left: DisplayedWidgets.dx[id],
+            top: DisplayedWidgets.dy[id] -70,
+            child: Visibility(
+              visible: DisplayedWidgets.input,
+              child: SizedBox(
+                width: 200,
+                height: 70,
+                child: InkWell(
+                    onTap: () => inputFocus.requestFocus(),
+                    onDoubleTap: () => {inputFocus.unfocus(),
+                      DisplayedWidgets.input_txt = DisplayedWidgets.input_ctrl.text,
+                      DisplayedWidgets.input_ctrl.text = "",
+                      DisplayedWidgets.input = false,
+                      if(DisplayedWidgets.input_name == "Change Name"){
+                        DisplayedWidgets.names[id] = DisplayedWidgets.input_txt,
+                        DisplayedWidgets.curr_settings[id][2] = DisplayedWidgets.names[id],
+                      }
+                      else if(DisplayedWidgets.input_name == "Height"){
+                        DisplayedWidgets.height[id] = double.parse(DisplayedWidgets.input_txt),
+                        FlutterError.onError = (details) {
+                          DisplayedWidgets.input_ctrl.text = "";
+                          DisplayedWidgets.input = false;
+                          updateDisplayed();
+                        },
+                        DisplayedWidgets.input_ctrl.text = "",
+                        DisplayedWidgets.input = false,
+                        DisplayedWidgets.curr_settings[id][3] = DisplayedWidgets.height[id].toString(),
+
+                      }
+                      else if(DisplayedWidgets.input_name == "Width"){
+                        DisplayedWidgets.width[id] = double.parse(DisplayedWidgets.input_txt),
+                        FlutterError.onError = (details) {
+                          DisplayedWidgets.input_ctrl.text = "";
+                          DisplayedWidgets.input = false;
+                          updateDisplayed();
+                        },
+                        DisplayedWidgets.input_ctrl.text = "",
+                        DisplayedWidgets.input = false,
+                        DisplayedWidgets.curr_settings[id][4] = DisplayedWidgets.width[id].toString(),
+
+                      }
+                        else if(DisplayedWidgets.input_name == "Border"){
+                            DisplayedWidgets.border[id] = double.parse(DisplayedWidgets.input_txt),
+                            FlutterError.onError = (details) {
+                              DisplayedWidgets.input_ctrl.text = "";
+                              DisplayedWidgets.input = false;
+                              updateDisplayed();
+                            },
+                            DisplayedWidgets.input_ctrl.text = "",
+                            DisplayedWidgets.input = false,
+                            DisplayedWidgets.curr_settings[id][5] = DisplayedWidgets.border[id].toString(),
+                          }
+
+                      else if(DisplayedWidgets.input_name == "BG Fill"){
+                        DisplayedWidgets.bgFill[id] = DisplayedWidgets.bgFill[id],
+                        FlutterError.onError = (details) {
+                          DisplayedWidgets.input_ctrl.text = "";
+                          DisplayedWidgets.input = false;
+                          updateDisplayed();
+                        },
+                        DisplayedWidgets.input_ctrl.text = "",
+                        DisplayedWidgets.input = false,
+                        DisplayedWidgets.curr_settings[id][6] = DisplayedWidgets.bgFill[id].toString(),
+                      },
+                      updateDisplayed()},
+
+                    child: AbsorbPointer(
+                        child: ListTile(
+                          title: TextField(
+                            controller: DisplayedWidgets.input_ctrl,
+                            focusNode: inputFocus,
+                            //keyboardType: TextInputType.multiline,
+                            maxLines: 1,
+                            decoration: InputDecoration(
+                                labelText: DisplayedWidgets.input_name,
+                                // Set border for enabled state (default)
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 3, color: Colors.blue),
+                                ),
+                                // Set border for focused state
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 3, color: Colors.red),
+                                )),
+                          ),))
+                ),
+              )
+            ),
+          );
+        }
+    );
+  }
+
 
   final Notifier notifier = Notifier();
   Offset offset = Offset.zero;
   static double temp_dx = 0.0;
   static double temp_dy = 0.0;
-  final List<String> textSettings = ["Close Menu", "Delete Widget", "Change Name","Height", "Width"];
+  static Text temp_name = Text("");
+  final List<String> textSettings = ["Close Menu", "Delete Widget", "Change Name","Height", "Width", "Border", "BG Fill", "Text Size", "Text Font", "Text Color"];
 
   Widget _buildTextBoxSettings(BuildContext context, int id) {
   return StatefulBuilder(
@@ -133,22 +242,28 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
         //if(DisplayedWidgets.dx[id])
         return Positioned(
             left: DisplayedWidgets.dx[id] - 95,
-            top: DisplayedWidgets.dy[id] + 5,
+            top: DisplayedWidgets.dy[id] - 65,
             child: Visibility(
               visible: DisplayedWidgets.visibilityValuesSettings[id],
                 child: SizedBox(
                   width: 100,
-                  height: 1000,
+                  height: (MediaQuery. of(context).size.height) - 150,
                   child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: 5,
+                    itemCount: 10,
+                    physics: AlwaysScrollableScrollPhysics(),
                     itemBuilder: ((context, index) {
-
+                      if(index > 1){
+                        temp_name = Text('${textSettings[index]}\nCurrent: ${DisplayedWidgets.curr_settings[id][index]}');
+                      }
+                      else{
+                      temp_name = Text(textSettings[index]);
+                      }
                       return ListTile(
                           shape: const ContinuousRectangleBorder(
                             side:  BorderSide(color: Colors.black, width: 2),
                           ),
-                        title: Text('${textSettings[index]}'),
+                        title: temp_name,
                         onTap: () => {
                             if(textSettings[index] == "Delete Widget"){
                                 if(DisplayedWidgets.editing == true){
@@ -166,24 +281,27 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                                 DisplayedWidgets.editing = false,
                                 DisplayedWidgets.height.removeAt(id),
                                 DisplayedWidgets.width.removeAt(id),
+                                DisplayedWidgets.border.removeAt(id),
                                 DisplayedWidgets.dx.removeAt(id),
                                 DisplayedWidgets.dy.removeAt(id),
                                 DisplayedWidgets.dx_settings.removeAt(id),
                                 DisplayedWidgets.dy_settings.removeAt(id),
-                                DisplayedWidgets.visibilityValuesSettings[id] =
-                                false,
+                                DisplayedWidgets.visibilityValuesSettings[id] = false,
                                 DisplayedWidgets.visibilityValuesSettings
                                     .removeAt(id),
                                 DisplayedWidgets.visibilityValues[id] = true,
+                                DisplayedWidgets.input = false,
                                 DisplayedWidgets.visibilityValues.removeAt(id),
                                 DisplayedWidgets.text.removeAt(id),
                                 DisplayedWidgets.textControllers.removeAt(id),
                                 DisplayedWidgets.details.removeAt(id),
                                 DisplayedWidgets.details_settings.removeAt(id),
+                                DisplayedWidgets.curr_settings.removeAt(id),
                                 updateDisplayed(),
-                            },
-                          if(textSettings[index] == "Close Menu"){
+                            }
+                          else if(textSettings[index] == "Close Menu"){
                               DisplayedWidgets.editing = false,
+                              DisplayedWidgets.input = false,
                               DisplayedWidgets.dx[id] = temp_dx,
                               DisplayedWidgets.dy[id] = temp_dy,
                               DragUpdateDetails(globalPosition: Offset(DisplayedWidgets.dx[id],DisplayedWidgets.dy[id])),
@@ -196,7 +314,17 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                                 },
                               },
                               updateDisplayed(),
+                          }
+                        else{
+                          if(DisplayedWidgets.input == false){
+                          DisplayedWidgets.input = true,
                           },
+                          DisplayedWidgets.input_name = textSettings[index],
+                          updateDisplayed(),
+                        },
+
+
+
                       },
 
                     );
@@ -261,14 +389,16 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                                     // open menu
                                     if(DisplayedWidgets.visibilityValuesSettings[id] == false) ... [
                                       DisplayedWidgets.editing = true,
+                                      DisplayedWidgets.input = false,
                                       temp_dx = DisplayedWidgets.dx[id],
                                       temp_dy = DisplayedWidgets.dy[id],
                                       DisplayedWidgets.dx[id] = 100,
-                                      DisplayedWidgets.dy[id] = 0,
+                                      DisplayedWidgets.dy[id] = 70,
                                       DragUpdateDetails(globalPosition: Offset(DisplayedWidgets.dx[id],DisplayedWidgets.dy[id])),
                                     ],
                                     // close menu
                                     if(DisplayedWidgets.visibilityValuesSettings[id] == true) ... [
+                                      DisplayedWidgets.input = false,
                                       DisplayedWidgets.editing = false,
                                       DisplayedWidgets.dx[id] = temp_dx,
                                       DisplayedWidgets.dy[id] = temp_dy,
@@ -295,14 +425,17 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                                               // Set border for enabled state (default)
                                               enabledBorder: OutlineInputBorder(
                                                 borderSide: BorderSide(
-                                                    width: 3, color: Colors.blue),
+                                                    width: DisplayedWidgets.border[id], color: Colors.blue),
                                               ),
                                               // Set border for focused state
                                               focusedBorder: OutlineInputBorder(
                                                 borderSide: BorderSide(
                                                     width: 3, color: Colors.red),
                                               )),
-                                        ),))
+                                          style: TextStyle(fontSize: DisplayedWidgets.fontSize[id]),
+                                        ),
+
+                                      ))
                               ),
                             ],
                             ),
@@ -417,6 +550,10 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                   DisplayedWidgets.names.add('Text box ${DisplayedWidgets.displayed.length}');
                   DisplayedWidgets.width.add(150);
                   DisplayedWidgets.height.add(100);
+                  DisplayedWidgets.border.add(3);
+                  DisplayedWidgets.bgFill.add("white");
+                  DisplayedWidgets.textCol.add("black");
+                  DisplayedWidgets.fontSize.add(14);
                   DisplayedWidgets.dx.add(50.0);
                   DisplayedWidgets.dy.add(100.0);
                   DisplayedWidgets.dx_settings.add(50.0);
@@ -427,6 +564,17 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                   DisplayedWidgets.textControllers.add(TextEditingController());
                   DisplayedWidgets.details.add(DragUpdateDetails(globalPosition:Offset(0.0,0.0)));
                   DisplayedWidgets.details_settings.add(DragUpdateDetails(globalPosition:Offset(0.0,0.0)));
+                  DisplayedWidgets.curr_settings.add([]);
+                  DisplayedWidgets.curr_settings[DisplayedWidgets.displayed.length - 1].add(""); //holder for close menu
+                  DisplayedWidgets.curr_settings[DisplayedWidgets.displayed.length - 1].add(""); //holder for delete widget
+                  DisplayedWidgets.curr_settings[DisplayedWidgets.displayed.length - 1].add('Text box ${DisplayedWidgets.displayed.length}'); //value of name
+                  DisplayedWidgets.curr_settings[DisplayedWidgets.displayed.length - 1].add("100"); // value of height
+                  DisplayedWidgets.curr_settings[DisplayedWidgets.displayed.length - 1].add("150"); //value of width
+                  DisplayedWidgets.curr_settings[DisplayedWidgets.displayed.length - 1].add("3"); // value of Border
+                  DisplayedWidgets.curr_settings[DisplayedWidgets.displayed.length - 1].add("Colors.white"); //value of BG Fill
+                  DisplayedWidgets.curr_settings[DisplayedWidgets.displayed.length - 1].add(""); //value of Text Size
+                  DisplayedWidgets.curr_settings[DisplayedWidgets.displayed.length - 1].add(""); // value of Text Font
+                  DisplayedWidgets.curr_settings[DisplayedWidgets.displayed.length - 1].add("Colors.black"); // value of Text Color
                   updateDisplayed();
                 }else if (TabsConfig.tabs[index] == 'code.png') {
                   DisplayedWidgets.displayed.add('code');
@@ -468,6 +616,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                       child: Stack(children: <Widget>[
                         for(var i=0; i<DisplayedWidgets.displayed.length; i+=1) ... [
                           _buildTextBoxSettings(context, i),
+                          _buildInputBox(context, id),
                         ]
                       ],),
                     )
