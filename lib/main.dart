@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       builder: (context, snapshot) {
         // Check for errors
         if (snapshot.hasError) {
-          return Center(child: Text("An error has occured"));
+          return Center(child: Text("An error has occured!"));
         }
 
         // Once complete, show your application
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               primarySwatch: Colors.blue,
             ),
-            home: LoginPage(title: "page"),
+            home: LoginPage(title: "Login Page"),
           );
         }
 
