@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:tbd/models/theme_settings.dart';
 import 'package:tbd/login_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import './login_page.dart';
 
 enum Themes { light, dark }
 
@@ -45,6 +47,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 leading: Icon(Icons.account_circle),
                 title: Text('Log out'),
                 onPressed: (value) {
+                  LoginPage.googleSignIn?.disconnect();
                   Navigator.pushAndRemoveUntil(context,
                       MaterialPageRoute(builder: (BuildContext context) {
                     return LoginPage(title: "Login");

@@ -15,7 +15,7 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
-
+  static GoogleSignIn? googleSignIn = _googleSignIn;
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -241,6 +241,7 @@ class _LoginPageState extends State<LoginPage> {
           final UserCredential userCredential =
               await auth.signInWithCredential(cred);
 
+          print("User instance ID: " + FirebaseAuth.instance.currentUser!.uid);
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(

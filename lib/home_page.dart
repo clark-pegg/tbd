@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tbd/doc_page.dart';
 import 'package:tbd/settings_page.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, this.title}) : super(key: key);
@@ -29,10 +30,9 @@ class _HomePageState extends State<HomePage> {
 
     print(sort);
 
-    if(sort.compareTo("Alphabetic") == 0){
+    if (sort.compareTo("Alphabetic") == 0) {
       notes.sort((File a, File b) => a.filename.compareTo(b.filename));
-    }
-    else if(sort.compareTo("Reverse") == 0){
+    } else if (sort.compareTo("Reverse") == 0) {
       notes.sort((File a, File b) => b.filename.compareTo(a.filename));
     }
 
@@ -154,23 +154,15 @@ class _HomePageState extends State<HomePage> {
             return AlertDialog(
                 title: const Text("Sorting Options"),
                 content: SingleChildScrollView(
-                    child: ListBody(
-                        children: [
-                          Text("Test")
-                        ]
-                    )
-                ),
+                    child: ListBody(children: [Text("Test")])),
                 actions: [
                   TextButton(
                       child: const Text("Approve"),
                       onPressed: () {
                         Navigator.of(context).pop();
-                      }
-                  )
-                ]
-            );
-          }
-      );
+                      })
+                ]);
+          });
     }
 
     Widget _offsetPopup() => PopupMenuButton<int>(
@@ -231,109 +223,101 @@ class _HomePageState extends State<HomePage> {
         );
     return Scaffold(
       drawer: Drawer(
-        child: ListView(
-          children: [
-            ListTile(
-              title: const Text("TBD Note Taking App"),
-              tileColor: Colors.blue,
-              textColor: Colors.white
-            ),
-            ListTile(
-              title: const Text("Change Sorting Rule"),
-              onTap: () => showDialog<String>(
+          child: ListView(children: [
+        ListTile(
+            title: const Text("TBD Note Taking App"),
+            tileColor: Colors.blue,
+            textColor: Colors.white),
+        ListTile(
+            title: const Text("Change Sorting Rule"),
+            onTap: () => showDialog<String>(
                 context: context,
                 builder: (BuildContext context) => AlertDialog(
-                  title: const Text("Choose Sorting Option"),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context, "Cancel"),
-                      child: const Text("Cancel")
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  FutureBuilder(
-                                    // Initialize FlutterFire:
-                                    future: getNotes("Alphabetic"),
-                                    builder: (context, snapshot) {
-                                      // Check for errors
-                                      if (snapshot.hasError) {
-                                        return Center(
-                                          child: Text("Something went wrong..."),
-                                        );
-                                      }
+                        title: const Text("Choose Sorting Option"),
+                        actions: [
+                          TextButton(
+                              onPressed: () => Navigator.pop(context, "Cancel"),
+                              child: const Text("Cancel")),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => FutureBuilder(
+                                              // Initialize FlutterFire:
+                                              future: getNotes("Alphabetic"),
+                                              builder: (context, snapshot) {
+                                                // Check for errors
+                                                if (snapshot.hasError) {
+                                                  return Center(
+                                                    child: Text(
+                                                        "Something went wrong..."),
+                                                  );
+                                                }
 
-                                      // Once complete, show your application
-                                      if (snapshot.connectionState == ConnectionState.done) {
-                                        return showBody(context, snapshot, 0);
-                                      }
+                                                // Once complete, show your application
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.done) {
+                                                  return showBody(
+                                                      context, snapshot, 0);
+                                                }
 
-                                      // Otherwise, show something whilst waiting for initialization to complete
-                                      return Center(
-                                        child: Text(
-                                          "Loading...",
-                                          style: TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  )
-                          )
-                        );
-                      },
-                      child: const Text("Alphabetic")
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  FutureBuilder(
-                                    // Initialize FlutterFire:
-                                    future: getNotes("Reverse"),
-                                    builder: (context, snapshot) {
-                                      // Check for errors
-                                      if (snapshot.hasError) {
-                                        return Center(
-                                          child: Text("Something went wrong..."),
-                                        );
-                                      }
+                                                // Otherwise, show something whilst waiting for initialization to complete
+                                                return Center(
+                                                  child: Text(
+                                                    "Loading...",
+                                                    style: TextStyle(
+                                                      fontSize: 30,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            )));
+                              },
+                              child: const Text("Alphabetic")),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => FutureBuilder(
+                                              // Initialize FlutterFire:
+                                              future: getNotes("Reverse"),
+                                              builder: (context, snapshot) {
+                                                // Check for errors
+                                                if (snapshot.hasError) {
+                                                  return Center(
+                                                    child: Text(
+                                                        "Something went wrong..."),
+                                                  );
+                                                }
 
-                                      // Once complete, show your application
-                                      if (snapshot.connectionState == ConnectionState.done) {
-                                        return showBody(context, snapshot, 0);
-                                      }
+                                                // Once complete, show your application
+                                                if (snapshot.connectionState ==
+                                                    ConnectionState.done) {
+                                                  return showBody(
+                                                      context, snapshot, 0);
+                                                }
 
-                                      // Otherwise, show something whilst waiting for initialization to complete
-                                      return Center(
-                                        child: Text(
-                                          "Loading...",
-                                          style: TextStyle(
-                                            fontSize: 30,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  )
-                          )
-                        );
-                      },
-                      child: const Text("Reverse Alphabetic")
-                    )
-                  ]
-                )
-              )
-            )
-          ]
-        )
-      ),
+                                                // Otherwise, show something whilst waiting for initialization to complete
+                                                return Center(
+                                                  child: Text(
+                                                    "Loading...",
+                                                    style: TextStyle(
+                                                      fontSize: 30,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            )));
+                              },
+                              child: const Text("Reverse Alphabetic"))
+                        ])))
+      ])),
       appBar: AppBar(
         title: Row(
           children: [
