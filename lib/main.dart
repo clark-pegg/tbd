@@ -27,15 +27,15 @@ class MyApp extends StatelessWidget {
       builder: (context, snapshot) {
         // Check for errors
         if (snapshot.hasError) {
-          return Center(child: Text("An error has occured"));
+          return Center(child: Text("An error has occured!"));
         }
         final settings = ThemeSettings(themeType);
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           return MaterialApp(
             title: 'StudentNote',
-            theme: settings.currentTheme,
-            home: LoginPage(title: "page"),
+            home: LoginPage(title: "Login Page"),
+            theme: settings.currentTheme
           );
         }
 
