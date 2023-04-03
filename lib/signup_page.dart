@@ -190,8 +190,28 @@ class _SignupPageState extends State<SignupPage> {
         );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
+          final snackBar = SnackBar(
+            content: const Text('The password provided is too weak.'),
+            action: SnackBarAction(
+              label: 'Dismiss',
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
           print('The password provided is too weak.');
         } else if (e.code == 'email-already-in-use') {
+          final snackBar = SnackBar(
+            content: const Text('The account already exists for that email.'),
+            action: SnackBarAction(
+              label: 'Dismiss',
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
           print('The account already exists for that email.');
         }
       } catch (e) {
