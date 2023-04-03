@@ -64,7 +64,11 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
   @override
   void initState() {
     // TODO: implement initState
-    TabsConfig.tabs.add('plus.png');
+    // print(TabsConfig.tabs);
+    if (!TabsConfig.tabs.contains("plus.png")) {
+      TabsConfig.tabs.add('plus.png');
+    }
+
     controller = TabController(
       length: TabsConfig.tabs.length,
       vsync: this,
