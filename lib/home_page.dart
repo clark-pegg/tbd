@@ -12,26 +12,38 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Future<List<File>> getNotes() async {
+  String sort = "Alphabetic";
+
+  Future<List<File>> getNotes(String sort) async {
     CollectionReference _collectionRef = FirebaseFirestore.instance
         .collection('users')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection("notes");
     // Get docs from collection reference
     QuerySnapshot querySnapshot = await _collectionRef.get();
-    List<File> notes = [];
     // Get data from docs and convert map to List
-    return querySnapshot.docs.map((doc) {
+    List<File> notes = querySnapshot.docs.map((doc) {
       File f = File(doc["name"], doc.id, doc["content"]);
       return f;
     }).toList();
+
+    print(sort);
+
+    if(sort.compareTo("Alphabetic") == 0){
+      notes.sort((File a, File b) => a.filename.compareTo(b.filename));
+    }
+    else if(sort.compareTo("Reverse") == 0){
+      notes.sort((File a, File b) => b.filename.compareTo(a.filename));
+    }
+
+    return notes;
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
       // Initialize FlutterFire:
-      future: getNotes(),
+      future: getNotes("Alphabetic"),
       builder: (context, snapshot) {
         // Check for errors
         if (snapshot.hasError) {
@@ -42,7 +54,7 @@ class _HomePageState extends State<HomePage> {
 
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
-          return showBody(context, snapshot);
+          return showBody(context, snapshot, 0);
         }
 
         // Otherwise, show something whilst waiting for initialization to complete
@@ -118,7 +130,7 @@ class _HomePageState extends State<HomePage> {
         });
   }
 
-  Widget showBody(context, snapshot) {
+  Widget showBody(context, snapshot, sort) {
     _actionItemPopup(value) {
       Map<int, String> _routingTable = {
         1: "New Folder",
@@ -132,6 +144,33 @@ class _HomePageState extends State<HomePage> {
           _displayTextInputDialog(context);
           break;
       }
+    }
+
+    Future<void> showSortingOptions() async {
+      return showDialog<void>(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                title: const Text("Sorting Options"),
+                content: SingleChildScrollView(
+                    child: ListBody(
+                        children: [
+                          Text("Test")
+                        ]
+                    )
+                ),
+                actions: [
+                  TextButton(
+                      child: const Text("Approve"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }
+                  )
+                ]
+            );
+          }
+      );
     }
 
     Widget _offsetPopup() => PopupMenuButton<int>(
@@ -191,17 +230,113 @@ class _HomePageState extends State<HomePage> {
           ),
         );
     return Scaffold(
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              title: const Text("TBD Note Taking App"),
+              tileColor: Colors.blue,
+              textColor: Colors.white
+            ),
+            ListTile(
+              title: const Text("Change Sorting Rule"),
+              onTap: () => showDialog<String>(
+                context: context,
+                builder: (BuildContext context) => AlertDialog(
+                  title: const Text("Choose Sorting Option"),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, "Cancel"),
+                      child: const Text("Cancel")
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  FutureBuilder(
+                                    // Initialize FlutterFire:
+                                    future: getNotes("Alphabetic"),
+                                    builder: (context, snapshot) {
+                                      // Check for errors
+                                      if (snapshot.hasError) {
+                                        return Center(
+                                          child: Text("Something went wrong..."),
+                                        );
+                                      }
+
+                                      // Once complete, show your application
+                                      if (snapshot.connectionState == ConnectionState.done) {
+                                        return showBody(context, snapshot, 0);
+                                      }
+
+                                      // Otherwise, show something whilst waiting for initialization to complete
+                                      return Center(
+                                        child: Text(
+                                          "Loading...",
+                                          style: TextStyle(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )
+                          )
+                        );
+                      },
+                      child: const Text("Alphabetic")
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  FutureBuilder(
+                                    // Initialize FlutterFire:
+                                    future: getNotes("Reverse"),
+                                    builder: (context, snapshot) {
+                                      // Check for errors
+                                      if (snapshot.hasError) {
+                                        return Center(
+                                          child: Text("Something went wrong..."),
+                                        );
+                                      }
+
+                                      // Once complete, show your application
+                                      if (snapshot.connectionState == ConnectionState.done) {
+                                        return showBody(context, snapshot, 0);
+                                      }
+
+                                      // Otherwise, show something whilst waiting for initialization to complete
+                                      return Center(
+                                        child: Text(
+                                          "Loading...",
+                                          style: TextStyle(
+                                            fontSize: 30,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  )
+                          )
+                        );
+                      },
+                      child: const Text("Reverse Alphabetic")
+                    )
+                  ]
+                )
+              )
+            )
+          ]
+        )
+      ),
       appBar: AppBar(
         title: Row(
           children: [
-            Expanded(
-              flex: 3,
-              child: FittedBox(
-                child: IconButton(
-                    icon: const Icon(Icons.menu),
-                    onPressed: () => Text("1")), // Should be menu screen
-              ),
-            ),
             const Expanded(
               flex: 14,
               child: TextField(

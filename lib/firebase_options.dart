@@ -67,6 +67,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '617925254475',
     projectId: 'studentnote-192b6',
     storageBucket: 'studentnote-192b6.appspot.com',
+    androidClientId: '617925254475-4lsvphk8ktvn8rvtg4ucie7keaoleeqf.apps.googleusercontent.com',
     iosClientId: '617925254475-j59ajm9v3ddcli3i5gfhpdt8botudplm.apps.googleusercontent.com',
     iosBundleId: 'com.example.tbd',
   );
@@ -77,6 +78,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '617925254475',
     projectId: 'studentnote-192b6',
     storageBucket: 'studentnote-192b6.appspot.com',
+    androidClientId: '617925254475-4lsvphk8ktvn8rvtg4ucie7keaoleeqf.apps.googleusercontent.com',
     iosClientId: '617925254475-j59ajm9v3ddcli3i5gfhpdt8botudplm.apps.googleusercontent.com',
     iosBundleId: 'com.example.tbd',
   );
