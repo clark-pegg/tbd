@@ -6,12 +6,22 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import './signup_page.dart';
 import './home_page.dart';
+import './forgot_password.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: [
     'email',
   ],
 );
+
+enum AuthStatus {
+  successful,
+  wrongPassword,
+  emailAlreadyExists,
+  invalidEmail,
+  weakPassword,
+  unknown,
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
@@ -121,7 +131,14 @@ class _LoginPageState extends State<LoginPage> {
                                     color: Colors.blue,
                                     fontWeight: FontWeight.bold),
                                 recognizer: TapGestureRecognizer()
-                                  ..onTap = (() => print("I forgor"))),
+                                  ..onTap = (() => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const ForgotPassWordPage(
+                                                  title: "Sign Up Page"),
+                                        ),
+                                      ))),
                           ),
                         ),
                         SizedBox(
