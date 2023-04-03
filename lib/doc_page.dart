@@ -42,9 +42,8 @@ class DisplayedWidgets {
 
 }
 
-class DocPage extends StatefulWidget {
-  final String id;
-  const DocPage({Key? key, required this.id}) : super(key: key);
+class DocPage extends StatefulWidget{
+  const DocPage({Key? key}) : super(key : key);
   @override
   _DocPageState createState() => _DocPageState();
 }
