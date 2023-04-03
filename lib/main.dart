@@ -2,13 +2,21 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:tbd/login_page.dart';
+import 'package:tbd/models/theme_settings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './home_page.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  final int themeType = sharedPreferences.getInt("themeType") ?? 0;
+  runApp(MyApp(themeType: themeType));
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final int themeType;
+  const MyApp({super.key, required this.themeType});
 
   // This widget is the root of your application.
   @override
@@ -21,15 +29,13 @@ class MyApp extends StatelessWidget {
         if (snapshot.hasError) {
           return Center(child: Text("An error has occured!"));
         }
-
+        final settings = ThemeSettings(themeType);
         // Once complete, show your application
         if (snapshot.connectionState == ConnectionState.done) {
           return MaterialApp(
             title: 'StudentNote',
-            theme: ThemeData(
-              primarySwatch: Colors.blue,
-            ),
             home: LoginPage(title: "Login Page"),
+            theme: settings.currentTheme
           );
         }
 
