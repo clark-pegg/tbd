@@ -1,14 +1,21 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:google_sign_in/google_sign_in.dart';
 import './signup_page.dart';
 import './home_page.dart';
 
+GoogleSignIn _googleSignIn = GoogleSignIn(
+  scopes: [
+    'email',
+  ],
+);
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key, required this.title});
-
+  static GoogleSignIn? googleSignIn = _googleSignIn;
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
   // how it looks.
@@ -167,12 +174,9 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         SignInButton(
                           Buttons.Google,
-                          onPressed: () => Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => HomePage(),
-                            ),
-                          ),
+                          onPressed: () {
+                            _handleSignIn();
+                          },
                         ),
                         const Spacer(),
                         const Divider(
@@ -217,6 +221,44 @@ class _LoginPageState extends State<LoginPage> {
             );
           },
         ));
+  }
+
+  Future<void> _handleSignIn() async {
+    try {
+      FirebaseAuth auth = FirebaseAuth.instance;
+
+      var signIn = await _googleSignIn.signIn();
+      if (signIn != null) {
+        final GoogleSignInAuthentication signInAuth =
+            await signIn.authentication;
+
+        final AuthCredential cred = GoogleAuthProvider.credential(
+          accessToken: signInAuth.accessToken,
+          idToken: signInAuth.idToken,
+        );
+
+        try {
+          final UserCredential userCredential =
+              await auth.signInWithCredential(cred);
+
+          print("User instance ID: " + FirebaseAuth.instance.currentUser!.uid);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+        } on FirebaseAuthException catch (e) {
+          if (e.code == 'account-exists-with-different-credential') {
+            // handle the error here
+          } else if (e.code == 'invalid-credential') {
+            // handle the error here
+          }
+        } catch (e) {}
+      }
+    } catch (error) {
+      print(error);
+    }
   }
 
   void _loginUser() async {
