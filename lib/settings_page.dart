@@ -18,8 +18,15 @@ class SettingsPage extends StatelessWidget {
             tiles: <SettingsTile>[
               SettingsTile.navigation(
                 leading: Icon(Icons.account_circle),
-                title: Text('Account settings'),
-                onPressed: (value) {},
+                title: Text('Log out'),
+                onPressed: (value) {
+                  Navigator.pushAndRemoveUntil(context,
+                      MaterialPageRoute(builder: (BuildContext context) {
+                    return LoginPage(title: "Login");
+                  }), (r) {
+                    return false;
+                  });
+                },
               ),
             ],
           ),
