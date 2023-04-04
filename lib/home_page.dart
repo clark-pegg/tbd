@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
     QuerySnapshot querySnapshot = await _collectionRef.get();
     // Get data from docs and convert map to List
     List<File> notes = querySnapshot.docs.map((doc) {
-      File f = File(doc["name"], doc.id, doc["content"]);
+      File f = File(doc["name"], doc.id);
       return f;
     }).toList();
 
@@ -49,7 +49,7 @@ class _HomePageState extends State<HomePage> {
         // Check for errors
         if (snapshot.hasError) {
           return Center(
-            child: Text("Something went wrong..."),
+            child: Text("Something went wrong... Error code(1)"),
           );
         }
 
@@ -73,8 +73,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   String? codeDialog;
-  String? valueText;
-
   final TextEditingController _textFieldController = TextEditingController();
   Future<void> _displayTextInputDialog(BuildContext context) async {
     _textFieldController.clear();
@@ -115,19 +113,33 @@ class _HomePageState extends State<HomePage> {
                       var contain = allFiles.where((file) =>
                           file.filename.toLowerCase() ==
                           codeDialog?.toLowerCase());
+                      String fn = codeDialog ?? "null";
                       if (contain.isEmpty) {
                         FirebaseFirestore.instance
                             .collection("users")
                             .doc(FirebaseAuth.instance.currentUser!.uid)
                             .collection("notes")
-                            .add({"name": codeDialog, "content": ""}).then(
-                                (value) {
+                            .add({
+                          "name": fn,
+                          "displayed": [],
+                          "names": [],
+                          "dx": [],
+                          "dy": [],
+                          "text": [],
+                          "bgFill": [],
+                          "textCol": [],
+                          "fontSize": [],
+                          "width": [],
+                          "height": [],
+                          "border": [],
+                        }).then((value) {
                           Navigator.pop(context);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => DocPage(
                                 id: value.id,
+                                filename: fn,
                               ),
                             ),
                           );
@@ -270,7 +282,7 @@ class _HomePageState extends State<HomePage> {
                                                 if (snapshot.hasError) {
                                                   return Center(
                                                     child: Text(
-                                                        "Something went wrong..."),
+                                                        "Something went wrong... Error code(2)"),
                                                   );
                                                 }
 
@@ -309,7 +321,7 @@ class _HomePageState extends State<HomePage> {
                                                 if (snapshot.hasError) {
                                                   return Center(
                                                     child: Text(
-                                                        "Something went wrong..."),
+                                                        "Something went wrong... Error code(3)"),
                                                   );
                                                 }
 
@@ -403,8 +415,7 @@ class _HomePageState extends State<HomePage> {
 class File extends StatelessWidget {
   final String filename;
   final String id;
-  final String content;
-  const File(this.filename, this.id, this.content);
+  const File(this.filename, this.id);
 
   @override
   Widget build(BuildContext context) {
@@ -414,6 +425,7 @@ class File extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => DocPage(
                   id: this.id,
+                  filename: this.filename,
                 ),
               ),
             ),
