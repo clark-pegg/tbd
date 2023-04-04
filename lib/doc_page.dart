@@ -607,6 +607,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
 
                     DisplayedWidgets.visibilityValuesSettings.add(false);
                     DisplayedWidgets.visibilityValues.add(true);
+                    DisplayedWidgets.textControllers[i].text = text_fb[i];
                     DisplayedWidgets.textControllers.add(TextEditingController());
                     DisplayedWidgets.details.add(DragUpdateDetails(globalPosition: Offset(double.parse(dx_fb[i]), double.parse(dy_fb[i]))));
 
