@@ -244,7 +244,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
 
   Future pickImageGal(int id) async {
     try {
-      final image = await ImagePicker().pickImage(source: ImageSource.camera);
+      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if(image == null) return;
       DisplayedWidgets.paths[id] = image.path;
     } on Exception catch(e) {
