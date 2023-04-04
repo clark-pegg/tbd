@@ -8,7 +8,7 @@
   {
     "widget name": "image",
     "image name": "image.png",
-    "description": "A widget to add imaged into your notes.",
+    "description": "A widget to add images into your notes.",
     "isFavourite": true
   }
 ]""";
