@@ -132,6 +132,7 @@ class _HomePageState extends State<HomePage> {
                           "width": [],
                           "height": [],
                           "border": [],
+                          "paths": [],
                         }).then((value) {
                           Navigator.pop(context);
                           Navigator.push(
