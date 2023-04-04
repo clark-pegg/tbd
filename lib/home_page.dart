@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String sort = "Alphabetic";
+  List<File> allFiles = [];
 
   Future<List<File>> getNotes(String sort) async {
     CollectionReference _collectionRef = FirebaseFirestore.instance
@@ -35,7 +36,7 @@ class _HomePageState extends State<HomePage> {
     } else if (sort.compareTo("Reverse") == 0) {
       notes.sort((File a, File b) => b.filename.compareTo(a.filename));
     }
-
+    allFiles = notes;
     return notes;
   }
 
@@ -76,6 +77,7 @@ class _HomePageState extends State<HomePage> {
 
   final TextEditingController _textFieldController = TextEditingController();
   Future<void> _displayTextInputDialog(BuildContext context) async {
+    _textFieldController.clear();
     return showDialog(
         context: context,
         builder: (context) {
@@ -108,21 +110,40 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   setState(() {
                     codeDialog = valueText;
-                    FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(FirebaseAuth.instance.currentUser!.uid)
-                        .collection("notes")
-                        .add({"name": codeDialog, "content": ""}).then((value) {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DocPage(
-                            id: value.id,
-                          ),
-                        ),
+                    if ((codeDialog == null) || (codeDialog == '')) {
+                      const invalidNameSnackBar = SnackBar(
+                        content: Text('Enter a valid name'),
                       );
-                    });
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(invalidNameSnackBar);
+                    } else {
+                      var contain =
+                          allFiles.where((file) => file.filename == codeDialog);
+                      if (contain.isEmpty) {
+                        FirebaseFirestore.instance
+                            .collection("users")
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .collection("notes")
+                            .add({"name": codeDialog, "content": ""}).then(
+                                (value) {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DocPage(
+                                id: value.id,
+                              ),
+                            ),
+                          );
+                        });
+                      } else {
+                        const invalidNameSnackBar = SnackBar(
+                          content: Text('That name is already being used'),
+                        );
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(invalidNameSnackBar);
+                      }
+                    }
                   });
                 },
               ),
