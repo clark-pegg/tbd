@@ -149,6 +149,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   setState(() {
                     _currentTheme = value;
                     ThemeSettings.changeTheme(1);
+                    final snackBarThemeChange = SnackBar(
+                      content: Text('Theme will be changed on restart'),
+                    );
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(snackBarThemeChange);
                     Navigator.pop(context);
                   });
                 },
