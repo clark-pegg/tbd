@@ -86,6 +86,11 @@ class _ForgotPassWordPage extends State<ForgotPassWordPage> {
                                   ),
                                   onPressed: () {
                                     resetPassword(email: emailC.text);
+                                    final snackBarPassword = SnackBar(
+                                      content: Text('Email sent'),
+                                    );
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBarPassword);
                                   },
                                   child: const Text(
                                     'Send Email',

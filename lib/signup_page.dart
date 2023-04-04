@@ -174,14 +174,13 @@ class _SignupPageState extends State<SignupPage> {
           email: emailC.text,
           password: password1C.text,
         );
-        FirebaseFirestore.instance
-            .collection("users")
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection("notes")
-            .add({
-          "name": "My first note",
-          "content": "Welcome to StudentNote :)"
-        }).then((value) {});
+        // FirebaseFirestore.instance
+        //     .collection("users")
+        //     .doc(FirebaseAuth.instance.currentUser!.uid)
+        //     .collection("notes")
+        //     .add({
+        //   "name": "My first note",
+        // }).then((value) {});
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
