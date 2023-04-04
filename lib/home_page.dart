@@ -84,11 +84,6 @@ class _HomePageState extends State<HomePage> {
           return AlertDialog(
             title: const Text('New note'),
             content: TextField(
-              onChanged: (value) {
-                setState(() {
-                  valueText = value;
-                });
-              },
               controller: _textFieldController,
               decoration: const InputDecoration(hintText: "Name"),
             ),
@@ -109,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                 child: const Text('OK'),
                 onPressed: () {
                   setState(() {
-                    codeDialog = valueText;
+                    codeDialog = _textFieldController.text;
                     if ((codeDialog == null) || (codeDialog == '')) {
                       const invalidNameSnackBar = SnackBar(
                         content: Text('Enter a valid name'),
@@ -117,8 +112,9 @@ class _HomePageState extends State<HomePage> {
                       ScaffoldMessenger.of(context)
                           .showSnackBar(invalidNameSnackBar);
                     } else {
-                      var contain =
-                          allFiles.where((file) => file.filename == codeDialog);
+                      var contain = allFiles.where((file) =>
+                          file.filename.toLowerCase() ==
+                          codeDialog?.toLowerCase());
                       if (contain.isEmpty) {
                         FirebaseFirestore.instance
                             .collection("users")
@@ -155,10 +151,10 @@ class _HomePageState extends State<HomePage> {
   Widget showBody(context, snapshot, sort) {
     _actionItemPopup(value) {
       Map<int, String> _routingTable = {
-        1: "New Folder",
-        2: "To-Do List",
-        3: "New Project",
-        4: "New Calendar",
+        // 1: "New Folder",
+        // 2: "To-Do List",
+        // 3: "New Project",
+        // 4: "New Calendar",
         5: "New Note"
       };
       switch (value) {
@@ -189,38 +185,38 @@ class _HomePageState extends State<HomePage> {
 
     Widget _offsetPopup() => PopupMenuButton<int>(
           itemBuilder: (context) => [
-            PopupMenuItem(
-              value: 1,
-              child: Text(
-                "Add Folder",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
-              ),
-            ),
-            PopupMenuItem(
-              value: 2,
-              child: Text(
-                "To-Do List",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
-              ),
-            ),
-            PopupMenuItem(
-              value: 3,
-              child: Text(
-                "New Project",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
-              ),
-            ),
-            PopupMenuItem(
-              value: 4,
-              child: Text(
-                "New Calendar",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
-              ),
-            ),
+            // PopupMenuItem(
+            //   value: 1,
+            //   child: Text(
+            //     "Add Folder",
+            //     style:
+            //         TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            //   ),
+            // ),
+            // PopupMenuItem(
+            //   value: 2,
+            //   child: Text(
+            //     "To-Do List",
+            //     style:
+            //         TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            //   ),
+            // ),
+            // PopupMenuItem(
+            //   value: 3,
+            //   child: Text(
+            //     "New Project",
+            //     style:
+            //         TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            //   ),
+            // ),
+            // PopupMenuItem(
+            //   value: 4,
+            //   child: Text(
+            //     "New Calendar",
+            //     style:
+            //         TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            //   ),
+            // ),
             PopupMenuItem(
               value: 5,
               child: Text(
@@ -230,7 +226,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ],
-          offset: Offset(-40.0, -250),
+          //offset: Offset(-40.0, -250),
+          offset: Offset(-40.0, -62.5),
           onSelected: (value) => _actionItemPopup(value),
           icon: Container(
             height: double.infinity,
