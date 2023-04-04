@@ -33,12 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Settings"), actions: [
-        BackButton(
-          color: Colors.white,
-          onPressed: () => Navigator.pop(context),
-        )
-      ]),
+      appBar: AppBar(title: Text("Settings"), actions: []),
       body: SettingsList(
         sections: [
           SettingsSection(
@@ -185,6 +180,10 @@ class _SettingsPageState extends State<SettingsPage> {
               child: const Text('Submit'),
               onPressed: () {
                 setState(() {
+                  final snackBarFeedback = SnackBar(
+                    content: Text('Feedback sent'),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBarFeedback);
                   Navigator.pop(context);
                 });
               },
@@ -213,6 +212,10 @@ class _SettingsPageState extends State<SettingsPage> {
               child: const Text('Submit'),
               onPressed: () {
                 setState(() {
+                  final snackBarFeedback = SnackBar(
+                    content: Text('Bug report sent'),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBarFeedback);
                   Navigator.pop(context);
                 });
               },
