@@ -185,45 +185,45 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                 children: <Widget>[
                   InkWell(
                       onLongPress: () => {
-                            // open menu
-                            if (DisplayedWidgets.visibilityValuesSettings[id] ==
-                                false) ...[
-                              DisplayedWidgets.editing = true,
-                              DisplayedWidgets.input1 = false,
-                              temp_dx = DisplayedWidgets.dx[id],
-                              temp_dy = DisplayedWidgets.dy[id],
-                              DisplayedWidgets.dx[id] = 120,
-                              DisplayedWidgets.dy[id] = 70,
-                              DragUpdateDetails(
-                                  globalPosition: Offset(
-                                      DisplayedWidgets.dx[id],
-                                      DisplayedWidgets.dy[id])),
-                            ],
-                            // close menu
-                            if (DisplayedWidgets.visibilityValuesSettings[id] ==
-                                true) ...[
-                              DisplayedWidgets.input1 = false,
-                              DisplayedWidgets.editing = false,
-                              DisplayedWidgets.dx[id] = temp_dx,
-                              DisplayedWidgets.dy[id] = temp_dy,
-                              DragUpdateDetails(
-                                  globalPosition: Offset(
-                                      DisplayedWidgets.dx[id],
-                                      DisplayedWidgets.dy[id])),
-                            ],
+                        // open menu
+                        if (DisplayedWidgets.visibilityValuesSettings[id] ==
+                            false) ...[
+                          DisplayedWidgets.editing = true,
+                          DisplayedWidgets.input1 = false,
+                          temp_dx = DisplayedWidgets.dx[id],
+                          temp_dy = DisplayedWidgets.dy[id],
+                          DisplayedWidgets.dx[id] = 120,
+                          DisplayedWidgets.dy[id] = 70,
+                          DragUpdateDetails(
+                              globalPosition: Offset(
+                                  DisplayedWidgets.dx[id],
+                                  DisplayedWidgets.dy[id])),
+                        ],
+                        // close menu
+                        if (DisplayedWidgets.visibilityValuesSettings[id] ==
+                            true) ...[
+                          DisplayedWidgets.input1 = false,
+                          DisplayedWidgets.editing = false,
+                          DisplayedWidgets.dx[id] = temp_dx,
+                          DisplayedWidgets.dy[id] = temp_dy,
+                          DragUpdateDetails(
+                              globalPosition: Offset(
+                                  DisplayedWidgets.dx[id],
+                                  DisplayedWidgets.dy[id])),
+                        ],
 
-                            DisplayedWidgets.visibilityValuesSettings[id] =
-                                !DisplayedWidgets.visibilityValuesSettings[id],
-                            for (var i = 0;
-                                i < DisplayedWidgets.displayed.length;
-                                i += 1) ...[
-                              if (i != id) ...[
-                                DisplayedWidgets.visibilityValues[i] =
-                                    !DisplayedWidgets.visibilityValues[i]
-                              ],
-                            ],
-                            updateDisplayed(),
-                          },
+                        DisplayedWidgets.visibilityValuesSettings[id] =
+                        !DisplayedWidgets.visibilityValuesSettings[id],
+                        for (var i = 0;
+                        i < DisplayedWidgets.displayed.length;
+                        i += 1) ...[
+                          if (i != id) ...[
+                            DisplayedWidgets.visibilityValues[i] =
+                            !DisplayedWidgets.visibilityValues[i]
+                          ],
+                        ],
+                        updateDisplayed(),
+                      },
                       child: AbsorbPointer(
                           child: Container(
                               decoration: BoxDecoration(
@@ -285,59 +285,59 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
               child: InkWell(
                   onTap: () => inputFocus.requestFocus(),
                   onDoubleTap: () => {
-                        inputFocus.unfocus(),
-                        DisplayedWidgets.input_txt =
-                            DisplayedWidgets.input_ctrl.text,
-                        if (DisplayedWidgets.input_name == "Height")
-                          {
-                            DisplayedWidgets.height[id] =
-                                double.parse(DisplayedWidgets.input_txt),
-                            FlutterError.onError = (details) {
-                              DisplayedWidgets.input_ctrl.text = "";
-                              DisplayedWidgets.input1 = false;
-                              updateDisplayed();
-                            },
-                            DisplayedWidgets.input_ctrl.text = "",
-                            DisplayedWidgets.input1 = false,
-                            DisplayedWidgets.curr_settings_image[id][4] =
-                                DisplayedWidgets.height[id].toString(),
-                          }
-                        else if (DisplayedWidgets.input_name == "Width")
-                          {
-                            DisplayedWidgets.width[id] =
-                                double.parse(DisplayedWidgets.input_txt),
-                            FlutterError.onError = (details) {
-                              DisplayedWidgets.input_ctrl.text = "";
-                              DisplayedWidgets.input1 = false;
-                              updateDisplayed();
-                            },
-                            DisplayedWidgets.input_ctrl.text = "",
-                            DisplayedWidgets.input1 = false,
-                            DisplayedWidgets.curr_settings_image[id][5] =
-                                DisplayedWidgets.width[id].toString(),
-                          },
-                        updateDisplayed()
+                    inputFocus.unfocus(),
+                    DisplayedWidgets.input_txt =
+                        DisplayedWidgets.input_ctrl.text,
+                    if (DisplayedWidgets.input_name == "Height")
+                      {
+                        DisplayedWidgets.height[id] =
+                            double.parse(DisplayedWidgets.input_txt),
+                        FlutterError.onError = (details) {
+                          DisplayedWidgets.input_ctrl.text = "";
+                          DisplayedWidgets.input1 = false;
+                          updateDisplayed();
+                        },
+                        DisplayedWidgets.input_ctrl.text = "",
+                        DisplayedWidgets.input1 = false,
+                        DisplayedWidgets.curr_settings_image[id][4] =
+                            DisplayedWidgets.height[id].toString(),
+                      }
+                    else if (DisplayedWidgets.input_name == "Width")
+                      {
+                        DisplayedWidgets.width[id] =
+                            double.parse(DisplayedWidgets.input_txt),
+                        FlutterError.onError = (details) {
+                          DisplayedWidgets.input_ctrl.text = "";
+                          DisplayedWidgets.input1 = false;
+                          updateDisplayed();
+                        },
+                        DisplayedWidgets.input_ctrl.text = "",
+                        DisplayedWidgets.input1 = false,
+                        DisplayedWidgets.curr_settings_image[id][5] =
+                            DisplayedWidgets.width[id].toString(),
                       },
+                    updateDisplayed()
+                  },
                   child: AbsorbPointer(
                       child: ListTile(
-                    title: TextField(
-                      controller: DisplayedWidgets.input_ctrl,
-                      focusNode: inputFocus,
-                      //keyboardType: TextInputType.multiline,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: DisplayedWidgets.input_name,
-                          // Set border for enabled state (default)
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
+                        title: TextField(
+                          controller: DisplayedWidgets.input_ctrl,
+                          focusNode: inputFocus,
+                          //keyboardType: TextInputType.multiline,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                              labelText: DisplayedWidgets.input_name,
+                              // Set border for enabled state (default)
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
                                 BorderSide(width: 3, color: Colors.blue),
-                          ),
-                          // Set border for focused state
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 3, color: Colors.red),
-                          )),
-                    ),
-                  ))),
+                              ),
+                              // Set border for focused state
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 3, color: Colors.red),
+                              )),
+                        ),
+                      ))),
             )),
       );
     });
@@ -358,12 +358,12 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                 shrinkWrap: true,
                 itemCount: 6,
                 physics: AlwaysScrollableScrollPhysics(),
-                itemBuilder: ((context, index) {
-                  if (index > 3) {
+                itemBuilder: ((context, index1) {
+                  if (index1 > 3) {
                     temp_name = Text(
-                        '${imageSettings[index]}\nCurrent: ${DisplayedWidgets.curr_settings_image[id][index]}');
+                        '${imageSettings[index1]}\nCurrent: ${DisplayedWidgets.curr_settings_image[id][index1]}');
                   } else {
-                    temp_name = Text(imageSettings[index]);
+                    temp_name = Text(imageSettings[index1]);
                   }
                   return ListTile(
                     shape: const ContinuousRectangleBorder(
@@ -371,16 +371,16 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                     ),
                     title: temp_name,
                     onTap: () => {
-                      if (imageSettings[index] == "Delete Widget")
+                      if (imageSettings[index1] == "Delete Widget")
                         {
                           if (DisplayedWidgets.editing == true)
                             {
                               for (var i = 0;
-                                  i < DisplayedWidgets.displayed.length;
-                                  i += 1) ...[
+                              i < DisplayedWidgets.displayed.length;
+                              i += 1) ...[
                                 if (i != id) ...[
                                   DisplayedWidgets.visibilityValues[i] =
-                                      !DisplayedWidgets.visibilityValues[i]
+                                  !DisplayedWidgets.visibilityValues[i]
                                 ],
                               ],
                             },
@@ -405,7 +405,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                           DisplayedWidgets.curr_settings_text_box.removeAt(id),
                           updateDisplayed(),
                         }
-                      else if (imageSettings[index] == "Close Menu")
+                      else if (imageSettings[index1] == "Close Menu")
                         {
                           DisplayedWidgets.editing = false,
                           DisplayedWidgets.input1 = false,
@@ -415,39 +415,39 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                               globalPosition: Offset(DisplayedWidgets.dx[id],
                                   DisplayedWidgets.dy[id])),
                           DisplayedWidgets.visibilityValuesSettings[id] =
-                              !DisplayedWidgets.visibilityValuesSettings[id],
+                          !DisplayedWidgets.visibilityValuesSettings[id],
                           for (var i = 0;
-                              i < DisplayedWidgets.displayed.length;
-                              i += 1)
+                          i < DisplayedWidgets.displayed.length;
+                          i += 1)
                             {
                               if (i != id)
                                 {
                                   DisplayedWidgets.visibilityValues[i] =
-                                      !DisplayedWidgets.visibilityValues[i]
+                                  !DisplayedWidgets.visibilityValues[i]
                                 },
                             },
                           updateDisplayed(),
                         }
-                      else if (imageSettings[index] == "Gallery")
-                        {
-                          print("Picking from Gallery"),
-                          pickImageGal(id),
-                          updateDisplayed(),
-                        }
-                      else if (imageSettings[index] == "Camera")
-                        {
-                          pickImageCam(id),
-                          updateDisplayed(),
-                        }
-                      else
-                        {
-                          if (DisplayedWidgets.input1 == false)
+                      else if (imageSettings[index1] == "Gallery")
+                          {
+                            print("Picking from Gallery"),
+                            pickImageGal(id),
+                            updateDisplayed(),
+                          }
+                        else if (imageSettings[index1] == "Camera")
                             {
-                              DisplayedWidgets.input1 = true,
+                              pickImageCam(id),
+                              updateDisplayed(),
+                            }
+                          else
+                            {
+                              if (DisplayedWidgets.input1 == false)
+                                {
+                                  DisplayedWidgets.input1 = true,
+                                },
+                              DisplayedWidgets.input_name = imageSettings[index1],
+                              updateDisplayed(),
                             },
-                          DisplayedWidgets.input_name = imageSettings[index],
-                          updateDisplayed(),
-                        },
                     },
                   );
                 }),
@@ -493,47 +493,47 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
               child: InkWell(
                   onTap: () => inputFocus.requestFocus(),
                   onDoubleTap: () => {
-                        inputFocus.unfocus(),
-                        DisplayedWidgets.input_txt =
-                            DisplayedWidgets.input_ctrl.text,
+                    inputFocus.unfocus(),
+                    DisplayedWidgets.input_txt =
+                        DisplayedWidgets.input_ctrl.text,
+                    DisplayedWidgets.input_ctrl.text = "",
+                    DisplayedWidgets.input = false,
+                    if (DisplayedWidgets.input_name == "Change Name")
+                      {
+                        DisplayedWidgets.names[id] =
+                            DisplayedWidgets.input_txt,
+                        DisplayedWidgets.curr_settings_text_box[id][2] =
+                        DisplayedWidgets.names[id],
+                      }
+                    else if (DisplayedWidgets.input_name == "Height")
+                      {
+                        DisplayedWidgets.height[id] =
+                            double.parse(DisplayedWidgets.input_txt),
+                        FlutterError.onError = (details) {
+                          DisplayedWidgets.input_ctrl.text = "";
+                          DisplayedWidgets.input = false;
+                          updateDisplayed();
+                        },
                         DisplayedWidgets.input_ctrl.text = "",
                         DisplayedWidgets.input = false,
-                        if (DisplayedWidgets.input_name == "Change Name")
-                          {
-                            DisplayedWidgets.names[id] =
-                                DisplayedWidgets.input_txt,
-                            DisplayedWidgets.curr_settings_text_box[id][2] =
-                                DisplayedWidgets.names[id],
-                          }
-                        else if (DisplayedWidgets.input_name == "Height")
-                          {
-                            DisplayedWidgets.height[id] =
-                                double.parse(DisplayedWidgets.input_txt),
-                            FlutterError.onError = (details) {
-                              DisplayedWidgets.input_ctrl.text = "";
-                              DisplayedWidgets.input = false;
-                              updateDisplayed();
-                            },
-                            DisplayedWidgets.input_ctrl.text = "",
-                            DisplayedWidgets.input = false,
-                            DisplayedWidgets.curr_settings_text_box[id][3] =
-                                DisplayedWidgets.height[id].toString(),
-                          }
-                        else if (DisplayedWidgets.input_name == "Width")
-                          {
-                            DisplayedWidgets.width[id] =
-                                double.parse(DisplayedWidgets.input_txt),
-                            FlutterError.onError = (details) {
-                              DisplayedWidgets.input_ctrl.text = "";
-                              DisplayedWidgets.input = false;
-                              updateDisplayed();
-                            },
-                            DisplayedWidgets.input_ctrl.text = "",
-                            DisplayedWidgets.input = false,
-                            DisplayedWidgets.curr_settings_text_box[id][4] =
-                                DisplayedWidgets.width[id].toString(),
-                          }
-                        else if (DisplayedWidgets.input_name == "Border")
+                        DisplayedWidgets.curr_settings_text_box[id][3] =
+                            DisplayedWidgets.height[id].toString(),
+                      }
+                    else if (DisplayedWidgets.input_name == "Width")
+                        {
+                          DisplayedWidgets.width[id] =
+                              double.parse(DisplayedWidgets.input_txt),
+                          FlutterError.onError = (details) {
+                            DisplayedWidgets.input_ctrl.text = "";
+                            DisplayedWidgets.input = false;
+                            updateDisplayed();
+                          },
+                          DisplayedWidgets.input_ctrl.text = "",
+                          DisplayedWidgets.input = false,
+                          DisplayedWidgets.curr_settings_text_box[id][4] =
+                              DisplayedWidgets.width[id].toString(),
+                        }
+                      else if (DisplayedWidgets.input_name == "Border")
                           {
                             DisplayedWidgets.border[id] =
                                 double.parse(DisplayedWidgets.input_txt),
@@ -548,55 +548,55 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                                 DisplayedWidgets.border[id].toString(),
                           }
                         else if (DisplayedWidgets.input_name == "BG Fill")
-                          {
-                            DisplayedWidgets.bgFill[id] =
-                                DisplayedWidgets.bgFill[id],
-                            FlutterError.onError = (details) {
-                              DisplayedWidgets.input_ctrl.text = "";
-                              DisplayedWidgets.input = false;
-                              updateDisplayed();
-                            },
-                            DisplayedWidgets.input_ctrl.text = "",
-                            DisplayedWidgets.input = false,
-                            DisplayedWidgets.curr_settings_text_box[id][6] =
-                                DisplayedWidgets.bgFill[id].toString(),
-                          }
-                        else if (DisplayedWidgets.input_name == "Font Size")
-                          {
-                            DisplayedWidgets.fontSize[id] =
-                                double.parse(DisplayedWidgets.input_txt),
-                            FlutterError.onError = (details) {
-                              DisplayedWidgets.input_ctrl.text = "";
-                              DisplayedWidgets.input = false;
-                              updateDisplayed();
-                            },
-                            DisplayedWidgets.input_ctrl.text = "",
-                            DisplayedWidgets.input = false,
-                            DisplayedWidgets.curr_settings_text_box[id][6] =
-                                DisplayedWidgets.fontSize[id].toString(),
-                          },
-                        updateDisplayed()
-                      },
+                            {
+                              DisplayedWidgets.bgFill[id] =
+                              DisplayedWidgets.bgFill[id],
+                              FlutterError.onError = (details) {
+                                DisplayedWidgets.input_ctrl.text = "";
+                                DisplayedWidgets.input = false;
+                                updateDisplayed();
+                              },
+                              DisplayedWidgets.input_ctrl.text = "",
+                              DisplayedWidgets.input = false,
+                              DisplayedWidgets.curr_settings_text_box[id][6] =
+                                  DisplayedWidgets.bgFill[id].toString(),
+                            }
+                          else if (DisplayedWidgets.input_name == "Font Size")
+                              {
+                                DisplayedWidgets.fontSize[id] =
+                                    double.parse(DisplayedWidgets.input_txt),
+                                FlutterError.onError = (details) {
+                                  DisplayedWidgets.input_ctrl.text = "";
+                                  DisplayedWidgets.input = false;
+                                  updateDisplayed();
+                                },
+                                DisplayedWidgets.input_ctrl.text = "",
+                                DisplayedWidgets.input = false,
+                                DisplayedWidgets.curr_settings_text_box[id][6] =
+                                    DisplayedWidgets.fontSize[id].toString(),
+                              },
+                    updateDisplayed()
+                  },
                   child: AbsorbPointer(
                       child: ListTile(
-                    title: TextField(
-                      controller: DisplayedWidgets.input_ctrl,
-                      focusNode: inputFocus,
-                      //keyboardType: TextInputType.multiline,
-                      maxLines: 1,
-                      decoration: InputDecoration(
-                          labelText: DisplayedWidgets.input_name,
-                          // Set border for enabled state (default)
-                          enabledBorder: OutlineInputBorder(
-                            borderSide:
+                        title: TextField(
+                          controller: DisplayedWidgets.input_ctrl,
+                          focusNode: inputFocus,
+                          //keyboardType: TextInputType.multiline,
+                          maxLines: 1,
+                          decoration: InputDecoration(
+                              labelText: DisplayedWidgets.input_name,
+                              // Set border for enabled state (default)
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
                                 BorderSide(width: 3, color: Colors.blue),
-                          ),
-                          // Set border for focused state
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(width: 3, color: Colors.red),
-                          )),
-                    ),
-                  ))),
+                              ),
+                              // Set border for focused state
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(width: 3, color: Colors.red),
+                              )),
+                        ),
+                      ))),
             )),
       );
     });
@@ -635,11 +635,11 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                           if (DisplayedWidgets.editing == true)
                             {
                               for (var i = 0;
-                                  i < DisplayedWidgets.displayed.length;
-                                  i += 1) ...[
+                              i < DisplayedWidgets.displayed.length;
+                              i += 1) ...[
                                 if (i != id) ...[
                                   DisplayedWidgets.visibilityValues[i] =
-                                      !DisplayedWidgets.visibilityValues[i]
+                                  !DisplayedWidgets.visibilityValues[i]
                                 ],
                               ],
                             },
@@ -674,15 +674,15 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                               globalPosition: Offset(DisplayedWidgets.dx[id],
                                   DisplayedWidgets.dy[id])),
                           DisplayedWidgets.visibilityValuesSettings[id] =
-                              !DisplayedWidgets.visibilityValuesSettings[id],
+                          !DisplayedWidgets.visibilityValuesSettings[id],
                           for (var i = 0;
-                              i < DisplayedWidgets.displayed.length;
-                              i += 1)
+                          i < DisplayedWidgets.displayed.length;
+                          i += 1)
                             {
                               if (i != id)
                                 {
                                   DisplayedWidgets.visibilityValues[i] =
-                                      !DisplayedWidgets.visibilityValues[i]
+                                  !DisplayedWidgets.visibilityValues[i]
                                 },
                             },
                           updateDisplayed(),
@@ -751,74 +751,74 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                   InkWell(
                       onTap: () => myFocusNode.requestFocus(),
                       onDoubleTap: () => {
-                            myFocusNode.unfocus(),
-                            DisplayedWidgets.text[id] =
-                                DisplayedWidgets.textControllers[id].text
-                          },
+                        myFocusNode.unfocus(),
+                        DisplayedWidgets.text[id] =
+                            DisplayedWidgets.textControllers[id].text
+                      },
                       onLongPress: () => {
-                            // open menu
-                            if (DisplayedWidgets.visibilityValuesSettings[id] ==
-                                false) ...[
-                              DisplayedWidgets.editing = true,
-                              DisplayedWidgets.input = false,
-                              temp_dx = DisplayedWidgets.dx[id],
-                              temp_dy = DisplayedWidgets.dy[id],
-                              DisplayedWidgets.dx[id] = 100,
-                              DisplayedWidgets.dy[id] = 70,
-                              DragUpdateDetails(
-                                  globalPosition: Offset(
-                                      DisplayedWidgets.dx[id],
-                                      DisplayedWidgets.dy[id])),
-                            ],
-                            // close menu
-                            if (DisplayedWidgets.visibilityValuesSettings[id] ==
-                                true) ...[
-                              DisplayedWidgets.input = false,
-                              DisplayedWidgets.editing = false,
-                              DisplayedWidgets.dx[id] = temp_dx,
-                              DisplayedWidgets.dy[id] = temp_dy,
-                              DragUpdateDetails(
-                                  globalPosition: Offset(
-                                      DisplayedWidgets.dx[id],
-                                      DisplayedWidgets.dy[id])),
-                            ],
+                        // open menu
+                        if (DisplayedWidgets.visibilityValuesSettings[id] ==
+                            false) ...[
+                          DisplayedWidgets.editing = true,
+                          DisplayedWidgets.input = false,
+                          temp_dx = DisplayedWidgets.dx[id],
+                          temp_dy = DisplayedWidgets.dy[id],
+                          DisplayedWidgets.dx[id] = 100,
+                          DisplayedWidgets.dy[id] = 70,
+                          DragUpdateDetails(
+                              globalPosition: Offset(
+                                  DisplayedWidgets.dx[id],
+                                  DisplayedWidgets.dy[id])),
+                        ],
+                        // close menu
+                        if (DisplayedWidgets.visibilityValuesSettings[id] ==
+                            true) ...[
+                          DisplayedWidgets.input = false,
+                          DisplayedWidgets.editing = false,
+                          DisplayedWidgets.dx[id] = temp_dx,
+                          DisplayedWidgets.dy[id] = temp_dy,
+                          DragUpdateDetails(
+                              globalPosition: Offset(
+                                  DisplayedWidgets.dx[id],
+                                  DisplayedWidgets.dy[id])),
+                        ],
 
-                            DisplayedWidgets.visibilityValuesSettings[id] =
-                                !DisplayedWidgets.visibilityValuesSettings[id],
-                            for (var i = 0;
-                                i < DisplayedWidgets.displayed.length;
-                                i += 1) ...[
-                              if (i != id) ...[
-                                DisplayedWidgets.visibilityValues[i] =
-                                    !DisplayedWidgets.visibilityValues[i]
-                              ],
-                            ],
-                            updateDisplayed(),
-                          },
+                        DisplayedWidgets.visibilityValuesSettings[id] =
+                        !DisplayedWidgets.visibilityValuesSettings[id],
+                        for (var i = 0;
+                        i < DisplayedWidgets.displayed.length;
+                        i += 1) ...[
+                          if (i != id) ...[
+                            DisplayedWidgets.visibilityValues[i] =
+                            !DisplayedWidgets.visibilityValues[i]
+                          ],
+                        ],
+                        updateDisplayed(),
+                      },
                       child: AbsorbPointer(
                           child: ListTile(
-                        title: TextField(
-                          controller: DisplayedWidgets.textControllers[id],
-                          focusNode: myFocusNode,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 36,
-                          decoration: InputDecoration(
-                              labelText: DisplayedWidgets.names[id],
-                              // Set border for enabled state (default)
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: DisplayedWidgets.border[id],
-                                    color: Colors.blue),
-                              ),
-                              // Set border for focused state
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
+                            title: TextField(
+                              controller: DisplayedWidgets.textControllers[id],
+                              focusNode: myFocusNode,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 36,
+                              decoration: InputDecoration(
+                                  labelText: DisplayedWidgets.names[id],
+                                  // Set border for enabled state (default)
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        width: DisplayedWidgets.border[id],
+                                        color: Colors.blue),
+                                  ),
+                                  // Set border for focused state
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
                                     BorderSide(width: 3, color: Colors.red),
-                              )),
-                          style: TextStyle(
-                              fontSize: DisplayedWidgets.fontSize[id]),
-                        ),
-                      ))),
+                                  )),
+                              style: TextStyle(
+                                  fontSize: DisplayedWidgets.fontSize[id]),
+                            ),
+                          ))),
                 ],
               ),
             ),
@@ -829,7 +829,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
   }
 
   final List<bool> _selected =
-      List.generate(20, (i) => false); // Fill it with false initially
+  List.generate(20, (i) => false); // Fill it with false initially
   Widget _buildPopupDialog(BuildContext context) {
     List<Widgets> _widgets = [];
     List<dynamic> jsonList = jsonDecode(jsonString);
@@ -925,27 +925,18 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
             if (snapshot.hasData && new_ == true) {
               print("Should be here every time new file \n\n\n\n\n\n\n");
               String filename = snapshot.data!["name"];
-              List<String> displayed_fb =
-                  List<String>.from(snapshot.data!["displayed"]);
-              List<String> names_fb =
-                  List<String>.from(snapshot.data!["names"]);
+              List<String> displayed_fb = List<String>.from(snapshot.data!["displayed"]);
+              List<String> names_fb = List<String>.from(snapshot.data!["names"]);
               List<String> dx_fb = List<String>.from(snapshot.data!["dx"]);
               List<String> dy_fb = List<String>.from(snapshot.data!["dy"]);
               List<String> text_fb = List<String>.from(snapshot.data!["text"]);
-              List<String> bgFill_fb =
-                  List<String>.from(snapshot.data!["bgFill"]);
-              List<String> textCol_fb =
-                  List<String>.from(snapshot.data!["textCol"]);
-              List<String> fontSize_fb =
-                  List<String>.from(snapshot.data!["fontSize"]);
-              List<String> width_fb =
-                  List<String>.from(snapshot.data!["width"]);
-              List<String> height_fb =
-                  List<String>.from(snapshot.data!["height"]);
-              List<String> border_fb =
-                  List<String>.from(snapshot.data!["border"]);
-              List<String> paths_fb =
-                  List<String>.from(snapshot.data!["paths"]);
+              List<String> bgFill_fb = List<String>.from(snapshot.data!["bgFill"]);
+              List<String> textCol_fb = List<String>.from(snapshot.data!["textCol"]);
+              List<String> fontSize_fb = List<String>.from(snapshot.data!["fontSize"]);
+              List<String> width_fb = List<String>.from(snapshot.data!["width"]);
+              List<String> height_fb = List<String>.from(snapshot.data!["height"]);
+              List<String> border_fb = List<String>.from(snapshot.data!["border"]);
+              List<String> paths_fb = List<String>.from(snapshot.data!["paths"]);
 
               DisplayedWidgets.displayed = [];
               DisplayedWidgets.names = [];
@@ -1000,60 +991,32 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                         double.parse(dx_fb[i]), double.parse(dy_fb[i]))));
                 if (displayed_fb[i] == "text") {
                   DisplayedWidgets.textControllers[i].text = text_fb[i];
+                  DisplayedWidgets.curr_settings_image.add([]);
                   DisplayedWidgets.curr_settings_text_box.add([]);
-                  DisplayedWidgets.curr_settings_text_box[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add(""); //holder for close menu
-                  DisplayedWidgets.curr_settings_text_box[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add(""); //holder for delete widget
-                  DisplayedWidgets.curr_settings_text_box[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add("${names_fb[i]}"); //value of name
-                  DisplayedWidgets.curr_settings_text_box[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add("${double.parse(height_fb[i])}"); // value of height
-                  DisplayedWidgets.curr_settings_text_box[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add("${double.parse(width_fb[i])}"); //value of width
-                  DisplayedWidgets.curr_settings_text_box[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add("${double.parse(border_fb[i])}"); // value of Border
-                  DisplayedWidgets.curr_settings_text_box[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add("Colors.white"); //value of BG Fill
-                  DisplayedWidgets.curr_settings_text_box[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add(
-                          "${double.parse(border_fb[i])}"); //value of Text Size
-                  DisplayedWidgets.curr_settings_text_box[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add(""); // value of Text Font
-                  DisplayedWidgets.curr_settings_text_box[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add("Colors.black"); // value of Text Color
+                  DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add(""); //holder for close menu
+                  DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add(""); //holder for delete widget
+                  DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("${names_fb[i]}"); //value of name
+                  DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("${double.parse(height_fb[i])}"); // value of height
+                  DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("${double.parse(width_fb[i])}"); //value of width
+                  DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("${double.parse(border_fb[i])}"); // value of Border
+                  DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("Colors.white"); //value of BG Fill
+                  DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("${double.parse(border_fb[i])}"); //value of Text Size
+                  DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add(""); // value of Text Font
+                  DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("Colors.black"); // value of Text Color
                   _buildTextBoxSettings(context, i);
                   _buildInputTextBox(context, i);
                 }
                 if (displayed_fb[i] == "image") {
+                  DisplayedWidgets.curr_settings_text_box.add([]);
                   DisplayedWidgets.curr_settings_image.add([]);
-                  DisplayedWidgets.curr_settings_image[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add(""); //holder for close menu
-                  DisplayedWidgets.curr_settings_image[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add(""); //holder for delete widget
-                  DisplayedWidgets.curr_settings_image[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add(""); //holder for delete widget
-                  DisplayedWidgets.curr_settings_image[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add("${double.parse(height_fb[i])}"); // value of height
-                  DisplayedWidgets.curr_settings_image[
-                          DisplayedWidgets.displayed.length - 1]
-                      .add("${double.parse(width_fb[i])}");
-                  _buildTextBoxSettings(context, i);
-                  _buildInputTextBox(context, i);
+                  DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add(""); //holder for close menu
+                  DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add(""); //holder for delete widget
+                  DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add(""); //holder for delete widget
+                  DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add(""); //holder for delete widget
+                  DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add("${double.parse(height_fb[i])}"); // value of height
+                  DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add("${double.parse(width_fb[i])}");
+                  _buildImageSettings(context, i);
+                  _buildInputImage(context, i);
                 }
                 updateDisplayed();
                 new_ = false;
@@ -1117,45 +1080,23 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
 
                       DisplayedWidgets.curr_settings_image.add([]);
                       DisplayedWidgets.curr_settings_text_box.add([]);
-                      DisplayedWidgets.curr_settings_text_box[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add(""); //holder for close menu
-                      DisplayedWidgets.curr_settings_text_box[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add(""); //holder for delete widget
-                      DisplayedWidgets.curr_settings_text_box[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add(
-                              'Text box ${DisplayedWidgets.displayed.length}'); //value of name
-                      DisplayedWidgets.curr_settings_text_box[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add("100"); // value of height
-                      DisplayedWidgets.curr_settings_text_box[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add("150"); //value of width
-                      DisplayedWidgets.curr_settings_text_box[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add("3"); // value of Border
-                      DisplayedWidgets.curr_settings_text_box[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add("Colors.white"); //value of BG Fill
-                      DisplayedWidgets.curr_settings_text_box[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add("14"); //value of Text Size
-                      DisplayedWidgets.curr_settings_text_box[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add(""); // value of Text Font
-                      DisplayedWidgets.curr_settings_text_box[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add("Colors.black"); // value of Text Color
+                      DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add(""); //holder for close menu
+                      DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add(""); //holder for delete widget
+                      DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add('Text box ${DisplayedWidgets.displayed.length}'); //value of name
+                      DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("100"); // value of height
+                      DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("150"); //value of width
+                      DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("3"); // value of Border
+                      DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("Colors.white"); //value of BG Fill
+                      DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("14"); //value of Text Size
+                      DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add(""); // value of Text Font
+                      DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("Colors.black"); // value of Text Color
                       updateDisplayed();
                     }
                     if (TabsConfig.tabs[index] == 'image.png' &&
                         DisplayedWidgets.editing == false) {
                       new_ = false;
                       DisplayedWidgets.displayed.add('image');
-                      DisplayedWidgets.names
-                          .add('Image ${DisplayedWidgets.displayed.length}');
+                      DisplayedWidgets.names.add('Image ${DisplayedWidgets.displayed.length}');
                       DisplayedWidgets.width.add(150);
                       DisplayedWidgets.height.add(100);
                       DisplayedWidgets.border.add(3);
@@ -1167,32 +1108,18 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                       DisplayedWidgets.visibilityValuesSettings.add(false);
                       DisplayedWidgets.visibilityValues.add(true);
                       DisplayedWidgets.text.add("");
-                      DisplayedWidgets.textControllers
-                          .add(TextEditingController());
-                      DisplayedWidgets.details.add(
-                          DragUpdateDetails(globalPosition: Offset(0.0, 0.0)));
+                      DisplayedWidgets.textControllers.add(TextEditingController());
+                      DisplayedWidgets.details.add(DragUpdateDetails(globalPosition: Offset(0.0, 0.0)));
                       DisplayedWidgets.paths.add("");
 
                       DisplayedWidgets.curr_settings_text_box.add([]);
                       DisplayedWidgets.curr_settings_image.add([]);
-                      DisplayedWidgets.curr_settings_image[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add(""); //holder for close menu
-                      DisplayedWidgets.curr_settings_image[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add(""); //holder for delete widget
-                      DisplayedWidgets.curr_settings_image[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add(""); //holder for add pic
-                      DisplayedWidgets.curr_settings_image[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add(""); //holder for add pic
-                      DisplayedWidgets.curr_settings_image[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add("100"); // value of height
-                      DisplayedWidgets.curr_settings_image[
-                              DisplayedWidgets.displayed.length - 1]
-                          .add("150"); //value of width
+                      DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add(""); //holder for close menu
+                      DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add(""); //holder for delete widget
+                      DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add(""); //holder for add pic
+                      DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add(""); //holder for add pic
+                      DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add("100"); // value of height
+                      DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add("150"); //value of width
                       updateDisplayed();
                     }
                   },
@@ -1200,7 +1127,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                   isScrollable: true,
                   tabs: List.generate(
                     TabsConfig.tabs.length,
-                    (index) => Image.asset(
+                        (index) => Image.asset(
                       'images/${TabsConfig.tabs[index]}',
                       width: 40,
                       height: 40,
@@ -1210,36 +1137,36 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                 title: Text(widget.filename),
               ),
               body: SizedBox.expand(
-                  //need to add firebase integration here to see if widget data already exists
+                //need to add firebase integration here to see if widget data already exists
                   child: Center(
-                child: Stack(
-                  children: <Widget>[
-                    for (var i = 0;
+                    child: Stack(
+                      children: <Widget>[
+                        for (var i = 0;
                         i < DisplayedWidgets.displayed.length;
                         i += 1) ...[
-                      if (DisplayedWidgets.displayed[i] == 'text') ...[
-                        _buildTextBox(context, i)
-                      ] else if (DisplayedWidgets.displayed[i] == 'image') ...[
-                        _buildImagePicker(context, i),
-                      ],
-                      Center(
-                        child: Stack(
-                          children: <Widget>[
-                            if (DisplayedWidgets.displayed[i] == 'text') ...[
-                              _buildTextBoxSettings(context, i),
-                              _buildInputTextBox(context, i),
-                            ],
-                            if (DisplayedWidgets.displayed[i] == 'image') ...[
-                              _buildImageSettings(context, i),
-                              _buildInputImage(context, i),
-                            ],
+                          if (DisplayedWidgets.displayed[i] == 'text') ...[
+                            _buildTextBox(context, i)
+                          ] else if (DisplayedWidgets.displayed[i] == 'image') ...[
+                            _buildImagePicker(context, i),
                           ],
-                        ),
-                      )
-                    ],
-                  ],
-                ),
-              )),
+                          Center(
+                            child: Stack(
+                              children: <Widget>[
+                                if (DisplayedWidgets.displayed[i] == 'text') ...[
+                                  _buildTextBoxSettings(context, i),
+                                  _buildInputTextBox(context, i),
+                                ],
+                                if (DisplayedWidgets.displayed[i] == 'image') ...[
+                                  _buildImageSettings(context, i),
+                                  _buildInputImage(context, i),
+                                ],
+                              ],
+                            ),
+                          )
+                        ],
+                      ],
+                    ),
+                  )),
             );
           });
     });
