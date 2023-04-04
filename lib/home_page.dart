@@ -408,35 +408,70 @@ class File extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MenuItemButton(
-      onPressed: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DocPage(
-            id: this.id,
-          ),
-        ),
-      ),
-      child: Column(
-        children: [
-          const Expanded(
-            flex: 8,
-            child: FittedBox(
-              child: Icon(
-                Icons.file_present,
-                color: Colors.black,
+    return GestureDetector(
+        onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DocPage(
+                  id: this.id,
+                ),
               ),
             ),
+        onLongPress: () => _displayDeleteDialog(context, filename, id),
+        child: MenuItemButton(
+          child: Column(
+            children: [
+              const Expanded(
+                flex: 8,
+                child: FittedBox(
+                  child: Icon(
+                    Icons.file_present,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  filename,
+                  style: const TextStyle(color: Colors.black),
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              filename,
-              style: const TextStyle(color: Colors.black),
-            ),
-          ),
-        ],
-      ),
-    );
+        ));
+  }
+
+  Future<void> _displayDeleteDialog(
+      BuildContext context, String filename, String id) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Delete note'),
+            content:
+                Text("Are you sure you want to delete \"" + filename + "\"?"),
+            actions: <Widget>[
+              MaterialButton(
+                color: Colors.red,
+                textColor: Colors.white,
+                child: const Text('DELETE'),
+                onPressed: () {
+                  FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                      .collection("notes")
+                      .doc(id)
+                      .delete()
+                      .then((value) {});
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
+                },
+              ),
+            ],
+          );
+        });
   }
 }
