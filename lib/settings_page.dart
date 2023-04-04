@@ -50,7 +50,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   LoginPage.googleSignIn?.disconnect();
                   Navigator.pushAndRemoveUntil(context,
                       MaterialPageRoute(builder: (BuildContext context) {
-                    return LoginPage(title: "Login");
+                    return LoginPage(title: "Login Page");
                   }), (r) {
                     return false;
                   });
