@@ -50,8 +50,7 @@ class DisplayedWidgets {
 
   //constant at initialization
   static bool editing = false;
-  static bool input = false;
-  static bool input1 = false;
+  static List<bool> input = [];
   static int selectedDispIndex = 0;
   static String input_txt = "";
   static String input_name = "";
@@ -189,7 +188,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                         if (DisplayedWidgets.visibilityValuesSettings[id] ==
                             false) ...[
                           DisplayedWidgets.editing = true,
-                          DisplayedWidgets.input1 = false,
+                          DisplayedWidgets.input[id] = false,
                           temp_dx = DisplayedWidgets.dx[id],
                           temp_dy = DisplayedWidgets.dy[id],
                           DisplayedWidgets.dx[id] = 120,
@@ -202,7 +201,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                         // close menu
                         if (DisplayedWidgets.visibilityValuesSettings[id] ==
                             true) ...[
-                          DisplayedWidgets.input1 = false,
+                          DisplayedWidgets.input[id] = false,
                           DisplayedWidgets.editing = false,
                           DisplayedWidgets.dx[id] = temp_dx,
                           DisplayedWidgets.dy[id] = temp_dy,
@@ -278,7 +277,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
         left: DisplayedWidgets.dx[id] - 20,
         top: DisplayedWidgets.dy[id] - 70,
         child: Visibility(
-            visible: DisplayedWidgets.input1,
+            visible: DisplayedWidgets.input[id],
             child: SizedBox(
               width: 200,
               height: 70,
@@ -294,11 +293,11 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                             double.parse(DisplayedWidgets.input_txt),
                         FlutterError.onError = (details) {
                           DisplayedWidgets.input_ctrl.text = "";
-                          DisplayedWidgets.input1 = false;
+                          DisplayedWidgets.input[id] = false;
                           updateDisplayed();
                         },
                         DisplayedWidgets.input_ctrl.text = "",
-                        DisplayedWidgets.input1 = false,
+                        DisplayedWidgets.input[id] = false,
                         DisplayedWidgets.curr_settings_image[id][4] =
                             DisplayedWidgets.height[id].toString(),
                       }
@@ -308,11 +307,11 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                             double.parse(DisplayedWidgets.input_txt),
                         FlutterError.onError = (details) {
                           DisplayedWidgets.input_ctrl.text = "";
-                          DisplayedWidgets.input1 = false;
+                          DisplayedWidgets.input[id] = false;
                           updateDisplayed();
                         },
                         DisplayedWidgets.input_ctrl.text = "",
-                        DisplayedWidgets.input1 = false,
+                        DisplayedWidgets.input[id] = false,
                         DisplayedWidgets.curr_settings_image[id][5] =
                             DisplayedWidgets.width[id].toString(),
                       },
@@ -397,7 +396,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                           DisplayedWidgets.visibilityValuesSettings
                               .removeAt(id),
                           DisplayedWidgets.visibilityValues[id] = true,
-                          DisplayedWidgets.input1 = false,
+                          DisplayedWidgets.input[id] = false,
                           DisplayedWidgets.visibilityValues.removeAt(id),
                           DisplayedWidgets.text.removeAt(id),
                           DisplayedWidgets.textControllers.removeAt(id),
@@ -408,7 +407,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                       else if (imageSettings[index1] == "Close Menu")
                         {
                           DisplayedWidgets.editing = false,
-                          DisplayedWidgets.input1 = false,
+                          DisplayedWidgets.input[id] = false,
                           DisplayedWidgets.dx[id] = temp_dx,
                           DisplayedWidgets.dy[id] = temp_dy,
                           DragUpdateDetails(
@@ -441,9 +440,9 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                             }
                           else
                             {
-                              if (DisplayedWidgets.input1 == false)
+                              if (DisplayedWidgets.input[id] == false)
                                 {
-                                  DisplayedWidgets.input1 = true,
+                                  DisplayedWidgets.input[id] = true,
                                 },
                               DisplayedWidgets.input_name = imageSettings[index1],
                               updateDisplayed(),
@@ -486,7 +485,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
         left: DisplayedWidgets.dx[id],
         top: DisplayedWidgets.dy[id] - 70,
         child: Visibility(
-            visible: DisplayedWidgets.input,
+            visible: DisplayedWidgets.input[id],
             child: SizedBox(
               width: 200,
               height: 70,
@@ -497,7 +496,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                     DisplayedWidgets.input_txt =
                         DisplayedWidgets.input_ctrl.text,
                     DisplayedWidgets.input_ctrl.text = "",
-                    DisplayedWidgets.input = false,
+                    DisplayedWidgets.input[id] = false,
                     if (DisplayedWidgets.input_name == "Change Name")
                       {
                         DisplayedWidgets.names[id] =
@@ -511,11 +510,11 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                             double.parse(DisplayedWidgets.input_txt),
                         FlutterError.onError = (details) {
                           DisplayedWidgets.input_ctrl.text = "";
-                          DisplayedWidgets.input = false;
+                          DisplayedWidgets.input[id] = false;
                           updateDisplayed();
                         },
                         DisplayedWidgets.input_ctrl.text = "",
-                        DisplayedWidgets.input = false,
+                        DisplayedWidgets.input[id] = false,
                         DisplayedWidgets.curr_settings_text_box[id][3] =
                             DisplayedWidgets.height[id].toString(),
                       }
@@ -525,11 +524,11 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                               double.parse(DisplayedWidgets.input_txt),
                           FlutterError.onError = (details) {
                             DisplayedWidgets.input_ctrl.text = "";
-                            DisplayedWidgets.input = false;
+                            DisplayedWidgets.input[id] = false;
                             updateDisplayed();
                           },
                           DisplayedWidgets.input_ctrl.text = "",
-                          DisplayedWidgets.input = false,
+                          DisplayedWidgets.input[id] = false,
                           DisplayedWidgets.curr_settings_text_box[id][4] =
                               DisplayedWidgets.width[id].toString(),
                         }
@@ -539,11 +538,11 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                                 double.parse(DisplayedWidgets.input_txt),
                             FlutterError.onError = (details) {
                               DisplayedWidgets.input_ctrl.text = "";
-                              DisplayedWidgets.input = false;
+                              DisplayedWidgets.input[id] = false;
                               updateDisplayed();
                             },
                             DisplayedWidgets.input_ctrl.text = "",
-                            DisplayedWidgets.input = false,
+                            DisplayedWidgets.input[id] = false,
                             DisplayedWidgets.curr_settings_text_box[id][5] =
                                 DisplayedWidgets.border[id].toString(),
                           }
@@ -553,11 +552,11 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                               DisplayedWidgets.bgFill[id],
                               FlutterError.onError = (details) {
                                 DisplayedWidgets.input_ctrl.text = "";
-                                DisplayedWidgets.input = false;
+                                DisplayedWidgets.input[id] = false;
                                 updateDisplayed();
                               },
                               DisplayedWidgets.input_ctrl.text = "",
-                              DisplayedWidgets.input = false,
+                              DisplayedWidgets.input[id] = false,
                               DisplayedWidgets.curr_settings_text_box[id][6] =
                                   DisplayedWidgets.bgFill[id].toString(),
                             }
@@ -567,11 +566,11 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                                     double.parse(DisplayedWidgets.input_txt),
                                 FlutterError.onError = (details) {
                                   DisplayedWidgets.input_ctrl.text = "";
-                                  DisplayedWidgets.input = false;
+                                  DisplayedWidgets.input[id] = false;
                                   updateDisplayed();
                                 },
                                 DisplayedWidgets.input_ctrl.text = "",
-                                DisplayedWidgets.input = false,
+                                DisplayedWidgets.input[id] = false,
                                 DisplayedWidgets.curr_settings_text_box[id][6] =
                                     DisplayedWidgets.fontSize[id].toString(),
                               },
@@ -656,7 +655,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                           DisplayedWidgets.visibilityValuesSettings
                               .removeAt(id),
                           DisplayedWidgets.visibilityValues[id] = true,
-                          DisplayedWidgets.input = false,
+                          DisplayedWidgets.input[id] = false,
                           DisplayedWidgets.visibilityValues.removeAt(id),
                           DisplayedWidgets.text.removeAt(id),
                           DisplayedWidgets.textControllers.removeAt(id),
@@ -667,7 +666,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                       else if (textSettings[index] == "Close Menu")
                         {
                           DisplayedWidgets.editing = false,
-                          DisplayedWidgets.input = false,
+                          DisplayedWidgets.input[id] = false,
                           DisplayedWidgets.dx[id] = temp_dx,
                           DisplayedWidgets.dy[id] = temp_dy,
                           DragUpdateDetails(
@@ -689,9 +688,9 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                         }
                       else
                         {
-                          if (DisplayedWidgets.input == false)
+                          if (DisplayedWidgets.input[id] == false)
                             {
-                              DisplayedWidgets.input = true,
+                              DisplayedWidgets.input[id] = true,
                             },
                           DisplayedWidgets.input_name = textSettings[index],
                           updateDisplayed(),
@@ -760,7 +759,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                         if (DisplayedWidgets.visibilityValuesSettings[id] ==
                             false) ...[
                           DisplayedWidgets.editing = true,
-                          DisplayedWidgets.input = false,
+                          DisplayedWidgets.input[id] = false,
                           temp_dx = DisplayedWidgets.dx[id],
                           temp_dy = DisplayedWidgets.dy[id],
                           DisplayedWidgets.dx[id] = 100,
@@ -773,7 +772,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                         // close menu
                         if (DisplayedWidgets.visibilityValuesSettings[id] ==
                             true) ...[
-                          DisplayedWidgets.input = false,
+                          DisplayedWidgets.input[id] = false,
                           DisplayedWidgets.editing = false,
                           DisplayedWidgets.dx[id] = temp_dx,
                           DisplayedWidgets.dy[id] = temp_dy,
@@ -955,6 +954,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
               //can be initialized later after pulling data from firebase
               DisplayedWidgets.visibilityValuesSettings = [];
               DisplayedWidgets.visibilityValues = [];
+              DisplayedWidgets.input = [];
               DisplayedWidgets.curr_settings_text_box = [[]];
               DisplayedWidgets.curr_settings_image = [[]];
               DisplayedWidgets.details = [];
@@ -962,8 +962,6 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
 
               //constant at initialization
               DisplayedWidgets.editing = false;
-              DisplayedWidgets.input = false;
-              DisplayedWidgets.input1 = false;
               DisplayedWidgets.selectedDispIndex = 0;
               DisplayedWidgets.input_txt = "";
               DisplayedWidgets.input_name = "";
@@ -984,6 +982,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
 
                 DisplayedWidgets.visibilityValuesSettings.add(false);
                 DisplayedWidgets.visibilityValues.add(true);
+                DisplayedWidgets.input.add(false);
                 DisplayedWidgets.textControllers.add(TextEditingController());
 
                 DisplayedWidgets.details.add(DragUpdateDetails(
@@ -1003,8 +1002,8 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                   DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("${double.parse(border_fb[i])}"); //value of Text Size
                   DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add(""); // value of Text Font
                   DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("Colors.black"); // value of Text Color
-                  _buildTextBoxSettings(context, i);
-                  _buildInputTextBox(context, i);
+                  //_buildTextBoxSettings(context, i);
+                  //_buildInputTextBox(context, i);
                 }
                 if (displayed_fb[i] == "image") {
                   DisplayedWidgets.curr_settings_text_box.add([]);
@@ -1015,8 +1014,8 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                   DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add(""); //holder for delete widget
                   DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add("${double.parse(height_fb[i])}"); // value of height
                   DisplayedWidgets.curr_settings_image[DisplayedWidgets.displayed.length - 1].add("${double.parse(width_fb[i])}");
-                  _buildImageSettings(context, i);
-                  _buildInputImage(context, i);
+                  //_buildImageSettings(context, i);
+                  //_buildInputImage(context, i);
                 }
                 updateDisplayed();
                 new_ = false;
@@ -1059,8 +1058,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                         DisplayedWidgets.editing == false) {
                       new_ = false;
                       DisplayedWidgets.displayed.add('text');
-                      DisplayedWidgets.names
-                          .add('Text box ${DisplayedWidgets.displayed.length}');
+                      DisplayedWidgets.names.add('Text box ${DisplayedWidgets.displayed.length}');
                       DisplayedWidgets.width.add(150);
                       DisplayedWidgets.height.add(100);
                       DisplayedWidgets.border.add(3);
@@ -1072,11 +1070,10 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                       DisplayedWidgets.visibilityValuesSettings.add(false);
                       DisplayedWidgets.visibilityValues.add(true);
                       DisplayedWidgets.text.add("");
-                      DisplayedWidgets.textControllers
-                          .add(TextEditingController());
-                      DisplayedWidgets.details.add(
-                          DragUpdateDetails(globalPosition: Offset(0.0, 0.0)));
+                      DisplayedWidgets.textControllers.add(TextEditingController());
+                      DisplayedWidgets.details.add(DragUpdateDetails(globalPosition: Offset(0.0, 0.0)));
                       DisplayedWidgets.paths.add("");
+                      DisplayedWidgets.input.add(false);
 
                       DisplayedWidgets.curr_settings_image.add([]);
                       DisplayedWidgets.curr_settings_text_box.add([]);
@@ -1092,8 +1089,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                       DisplayedWidgets.curr_settings_text_box[DisplayedWidgets.displayed.length - 1].add("Colors.black"); // value of Text Color
                       updateDisplayed();
                     }
-                    if (TabsConfig.tabs[index] == 'image.png' &&
-                        DisplayedWidgets.editing == false) {
+                    if (TabsConfig.tabs[index] == 'image.png' && DisplayedWidgets.editing == false) {
                       new_ = false;
                       DisplayedWidgets.displayed.add('image');
                       DisplayedWidgets.names.add('Image ${DisplayedWidgets.displayed.length}');
@@ -1111,6 +1107,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                       DisplayedWidgets.textControllers.add(TextEditingController());
                       DisplayedWidgets.details.add(DragUpdateDetails(globalPosition: Offset(0.0, 0.0)));
                       DisplayedWidgets.paths.add("");
+                      DisplayedWidgets.input.add(false);
 
                       DisplayedWidgets.curr_settings_text_box.add([]);
                       DisplayedWidgets.curr_settings_image.add([]);
@@ -1141,9 +1138,7 @@ class _DocPageState extends State<DocPage> with TickerProviderStateMixin {
                   child: Center(
                     child: Stack(
                       children: <Widget>[
-                        for (var i = 0;
-                        i < DisplayedWidgets.displayed.length;
-                        i += 1) ...[
+                        for (var i = 0; i < DisplayedWidgets.displayed.length; i += 1) ...[
                           if (DisplayedWidgets.displayed[i] == 'text') ...[
                             _buildTextBox(context, i)
                           ] else if (DisplayedWidgets.displayed[i] == 'image') ...[
