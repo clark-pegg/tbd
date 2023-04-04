@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String sort = "Alphabetic";
+  List<File> allFiles = [];
 
   Future<List<File>> getNotes(String sort) async {
     CollectionReference _collectionRef = FirebaseFirestore.instance
@@ -35,7 +36,7 @@ class _HomePageState extends State<HomePage> {
     } else if (sort.compareTo("Reverse") == 0) {
       notes.sort((File a, File b) => b.filename.compareTo(a.filename));
     }
-
+    allFiles = notes;
     return notes;
   }
 
@@ -76,17 +77,13 @@ class _HomePageState extends State<HomePage> {
 
   final TextEditingController _textFieldController = TextEditingController();
   Future<void> _displayTextInputDialog(BuildContext context) async {
+    _textFieldController.clear();
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
             title: const Text('New note'),
             content: TextField(
-              onChanged: (value) {
-                setState(() {
-                  valueText = value;
-                });
-              },
               controller: _textFieldController,
               decoration: const InputDecoration(hintText: "Name"),
             ),
@@ -107,21 +104,42 @@ class _HomePageState extends State<HomePage> {
                 child: const Text('OK'),
                 onPressed: () {
                   setState(() {
-                    codeDialog = valueText;
-                    FirebaseFirestore.instance
-                        .collection("users")
-                        .doc(FirebaseAuth.instance.currentUser!.uid)
-                        .collection("notes")
-                        .add({"name": codeDialog, "content": ""}).then((value) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DocPage(
-                            id: value.id,
-                          ),
-                        ),
+                    codeDialog = _textFieldController.text;
+                    if ((codeDialog == null) || (codeDialog == '')) {
+                      const invalidNameSnackBar = SnackBar(
+                        content: Text('Enter a valid name'),
                       );
-                    });
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(invalidNameSnackBar);
+                    } else {
+                      var contain = allFiles.where((file) =>
+                          file.filename.toLowerCase() ==
+                          codeDialog?.toLowerCase());
+                      if (contain.isEmpty) {
+                        FirebaseFirestore.instance
+                            .collection("users")
+                            .doc(FirebaseAuth.instance.currentUser!.uid)
+                            .collection("notes")
+                            .add({"name": codeDialog, "content": ""}).then(
+                                (value) {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DocPage(
+                                id: value.id,
+                              ),
+                            ),
+                          );
+                        });
+                      } else {
+                        const invalidNameSnackBar = SnackBar(
+                          content: Text('That name is already being used'),
+                        );
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(invalidNameSnackBar);
+                      }
+                    }
                   });
                 },
               ),
@@ -133,10 +151,10 @@ class _HomePageState extends State<HomePage> {
   Widget showBody(context, snapshot, sort) {
     _actionItemPopup(value) {
       Map<int, String> _routingTable = {
-        1: "New Folder",
-        2: "To-Do List",
-        3: "New Project",
-        4: "New Calendar",
+        // 1: "New Folder",
+        // 2: "To-Do List",
+        // 3: "New Project",
+        // 4: "New Calendar",
         5: "New Note"
       };
       switch (value) {
@@ -167,38 +185,38 @@ class _HomePageState extends State<HomePage> {
 
     Widget _offsetPopup() => PopupMenuButton<int>(
           itemBuilder: (context) => [
-            PopupMenuItem(
-              value: 1,
-              child: Text(
-                "Add Folder",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
-              ),
-            ),
-            PopupMenuItem(
-              value: 2,
-              child: Text(
-                "To-Do List",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
-              ),
-            ),
-            PopupMenuItem(
-              value: 3,
-              child: Text(
-                "New Project",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
-              ),
-            ),
-            PopupMenuItem(
-              value: 4,
-              child: Text(
-                "New Calendar",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
-              ),
-            ),
+            // PopupMenuItem(
+            //   value: 1,
+            //   child: Text(
+            //     "Add Folder",
+            //     style:
+            //         TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            //   ),
+            // ),
+            // PopupMenuItem(
+            //   value: 2,
+            //   child: Text(
+            //     "To-Do List",
+            //     style:
+            //         TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            //   ),
+            // ),
+            // PopupMenuItem(
+            //   value: 3,
+            //   child: Text(
+            //     "New Project",
+            //     style:
+            //         TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            //   ),
+            // ),
+            // PopupMenuItem(
+            //   value: 4,
+            //   child: Text(
+            //     "New Calendar",
+            //     style:
+            //         TextStyle(color: Colors.black, fontWeight: FontWeight.w700),
+            //   ),
+            // ),
             PopupMenuItem(
               value: 5,
               child: Text(
@@ -208,7 +226,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ],
-          offset: Offset(-40.0, -250),
+          //offset: Offset(-40.0, -250),
+          offset: Offset(-40.0, -62.5),
           onSelected: (value) => _actionItemPopup(value),
           icon: Container(
             height: double.infinity,
@@ -389,35 +408,70 @@ class File extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MenuItemButton(
-      onPressed: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DocPage(
-            id: this.id,
-          ),
-        ),
-      ),
-      child: Column(
-        children: [
-          const Expanded(
-            flex: 8,
-            child: FittedBox(
-              child: Icon(
-                Icons.file_present,
-                color: Colors.black,
+    return GestureDetector(
+        onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DocPage(
+                  id: this.id,
+                ),
               ),
             ),
+        onLongPress: () => _displayDeleteDialog(context, filename, id),
+        child: MenuItemButton(
+          child: Column(
+            children: [
+              const Expanded(
+                flex: 8,
+                child: FittedBox(
+                  child: Icon(
+                    Icons.file_present,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  filename,
+                  style: const TextStyle(color: Colors.black),
+                ),
+              ),
+            ],
           ),
-          Expanded(
-            flex: 2,
-            child: Text(
-              filename,
-              style: const TextStyle(color: Colors.black),
-            ),
-          ),
-        ],
-      ),
-    );
+        ));
+  }
+
+  Future<void> _displayDeleteDialog(
+      BuildContext context, String filename, String id) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Delete note'),
+            content:
+                Text("Are you sure you want to delete \"" + filename + "\"?"),
+            actions: <Widget>[
+              MaterialButton(
+                color: Colors.red,
+                textColor: Colors.white,
+                child: const Text('DELETE'),
+                onPressed: () {
+                  FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(FirebaseAuth.instance.currentUser!.uid)
+                      .collection("notes")
+                      .doc(id)
+                      .delete()
+                      .then((value) {});
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomePage()),
+                  );
+                },
+              ),
+            ],
+          );
+        });
   }
 }

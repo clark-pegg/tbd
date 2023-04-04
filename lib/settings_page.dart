@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:tbd/models/theme_settings.dart';
 import 'package:tbd/login_page.dart';
@@ -32,12 +33,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Settings"), actions: [
-        BackButton(
-          color: Colors.white,
-          onPressed: () => Navigator.pop(context),
-        )
-      ]),
+      appBar: AppBar(title: Text("Settings"), actions: []),
       body: SettingsList(
         sections: [
           SettingsSection(
@@ -46,11 +42,12 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsTile.navigation(
                 leading: Icon(Icons.account_circle),
                 title: Text('Log out'),
-                onPressed: (value) {
+                onPressed: (value) async {
                   LoginPage.googleSignIn?.disconnect();
+                  await FirebaseAuth.instance.signOut();
                   Navigator.pushAndRemoveUntil(context,
                       MaterialPageRoute(builder: (BuildContext context) {
-                    return LoginPage(title: "Login");
+                    return LoginPage(title: "Login Page");
                   }), (r) {
                     return false;
                   });
@@ -149,6 +146,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   setState(() {
                     _currentTheme = value;
                     ThemeSettings.changeTheme(1);
+                    final snackBarThemeChange = SnackBar(
+                      content: Text('Theme will be changed on restart'),
+                    );
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(snackBarThemeChange);
                     Navigator.pop(context);
                   });
                 },
@@ -178,6 +180,10 @@ class _SettingsPageState extends State<SettingsPage> {
               child: const Text('Submit'),
               onPressed: () {
                 setState(() {
+                  final snackBarFeedback = SnackBar(
+                    content: Text('Feedback sent'),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBarFeedback);
                   Navigator.pop(context);
                 });
               },
@@ -206,6 +212,10 @@ class _SettingsPageState extends State<SettingsPage> {
               child: const Text('Submit'),
               onPressed: () {
                 setState(() {
+                  final snackBarFeedback = SnackBar(
+                    content: Text('Bug report sent'),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBarFeedback);
                   Navigator.pop(context);
                 });
               },
