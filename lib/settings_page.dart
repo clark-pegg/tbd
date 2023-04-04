@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:tbd/models/theme_settings.dart';
 import 'package:tbd/login_page.dart';
@@ -46,8 +47,9 @@ class _SettingsPageState extends State<SettingsPage> {
               SettingsTile.navigation(
                 leading: Icon(Icons.account_circle),
                 title: Text('Log out'),
-                onPressed: (value) {
+                onPressed: (value) async {
                   LoginPage.googleSignIn?.disconnect();
+                  await FirebaseAuth.instance.signOut();
                   Navigator.pushAndRemoveUntil(context,
                       MaterialPageRoute(builder: (BuildContext context) {
                     return LoginPage(title: "Login Page");
