@@ -113,6 +113,7 @@ class _HomePageState extends State<HomePage> {
                         .doc(FirebaseAuth.instance.currentUser!.uid)
                         .collection("notes")
                         .add({"name": codeDialog, "content": ""}).then((value) {
+                      Navigator.pop(context);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
