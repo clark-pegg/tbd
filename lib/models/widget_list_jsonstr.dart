@@ -6,15 +6,9 @@
     "isFavourite": true
   },
   {
-    "widget name": "math",
-    "image name": "math.png",
-    "description": "A math widget that allows you to write formulas with ease.",
-    "isFavourite": false
-  },
-  {
-    "widget name": "code",
-    "image name": "code.png",
-    "description": "A code widget that allows you to write code in a neat way.",
+    "widget name": "image",
+    "image name": "image.png",
+    "description": "A widget to add imaged into your notes.",
     "isFavourite": true
   }
 ]""";
