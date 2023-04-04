@@ -68,6 +68,7 @@ flutter:
     - images/math.png
     - images/plus.png
     - images/text.png
+    - images/image.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
